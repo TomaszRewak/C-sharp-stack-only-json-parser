@@ -4,9 +4,10 @@ using System.Text;
 
 namespace StackOnlyJsonParser
 {
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public class StackOnlyJsonCollectionAttribute : Attribute
     {
-        public StackOnlyJsonCollectionAttribute(params StackOnlyCollectionKind[] collectionKind)
+        public StackOnlyJsonCollectionAttribute(params JsonCollectionKind[] collectionKind)
         { }
     }
 }

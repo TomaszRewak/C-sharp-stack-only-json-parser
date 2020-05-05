@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace StackOnlyJsonParser.Example.Model
 {
     [StackOnlyJsonType("StackOnlyProduct")]
+    [StackOnlyJsonCollection(JsonCollectionKind.Array, JsonCollectionKind.Dictionary)]
+    [StackOnlyJsonCollection(JsonCollectionKind.Array, JsonCollectionKind.Array)]
     public class Product
     {
         [StackOnlyJsonProperty]
