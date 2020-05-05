@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -57,7 +58,14 @@ namespace StackOnlyJsonParser
         public readonly double A;
         public readonly double B;
 
-        public ClassParser(ref Utf8JsonReader jsonReader)
+        public ClassParser(ReadOnlySpan<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip }))
+        { }
+
+        public ClassParser(ReadOnlySequence<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip }))
+        { }
+
+        private ClassParser(Utf8JsonReader jsonReader) : this(ref jsonReader) { }
+        internal ClassParser(ref Utf8JsonReader jsonReader)
         {
             A = default;
             B = default;
@@ -69,7 +77,7 @@ namespace StackOnlyJsonParser
             {
                 if (!jsonReader.Read()) throw new JsonException("Expected '}'");
                 if (jsonReader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Expected property name");
-                
+
                 if (jsonReader.ValueTextEquals("PropertyName"))
                 {
                     jsonReader.Read();
