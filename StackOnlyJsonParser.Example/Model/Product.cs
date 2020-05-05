@@ -12,7 +12,7 @@ namespace StackOnlyJsonParser.Example.Model
         [StackOnlyJsonProperty]
         public int Id { get; set; }
 
-        [StackOnlyJsonProperty]
+        [StackOnlyJsonProperty, StrictlyStackOnly]
         public string Name { get; set; }
 
         [StackOnlyJsonProperty]
