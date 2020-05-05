@@ -38,12 +38,20 @@ namespace StackOnlyJsonParser
 
                 //Console.Error.WriteLine(typeNamespace);
 
-                context.AddSource("stackOnlyJsonParser.Generated.cs", SourceText.From($@"
+                context.AddSource("StackOnlyJsonParser.Generated.cs", SourceText.From($@"
 namespace {typeNamespace}
 {{
             public class {typeName}
     {{
         public static void GeneratedMethod()
+        {{
+            // generated code
+        }}
+        public static void GeneratedMethod2()
+        {{
+            // generated code
+        }}
+        internal static void GeneratedMethod3()
         {{
             // generated code
         }}
