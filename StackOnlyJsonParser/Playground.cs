@@ -15,24 +15,25 @@ namespace StackOnlyJsonParser
     {
         private Utf8JsonReader _jsonReader;
 
-        public CollectionEnumerator(ref Utf8JsonReader jsonReader)
+        public CollectionEnumerator(Utf8JsonReader jsonReader)
         {
             _jsonReader = jsonReader;
             Current = default;
 
+            if (_jsonReader.TokenType == JsonTokenType.None) _jsonReader.Read();
             if (_jsonReader.TokenType != JsonTokenType.StartArray) throw new JsonException("Expected '['");
-
-            jsonReader.Skip();
+            if (!_jsonReader.Read()) throw new JsonException("Expected ']'");
         }
 
         public double Current { get; private set; }
 
         public bool MoveNext()
         {
-            if (!_jsonReader.Read()) throw new JsonException("Expected ']'");
             if (_jsonReader.TokenType == JsonTokenType.EndArray) return false;
 
             Current = _jsonReader.GetDouble();
+
+            if (!_jsonReader.Read()) throw new JsonException("Expected ']'");
 
             return true;
         }
@@ -40,20 +41,53 @@ namespace StackOnlyJsonParser
 
     ref struct CollectionEnumerable
     {
-        Utf8JsonReader _jsonReader;
+        private Utf8JsonReader _jsonReader;
 
-        public IEnumerator<int> GetEnumerator()
+        public CollectionEnumerable(ref Utf8JsonReader jsonReader)
         {
-            if (_jsonReader.TokenType != JsonTokenType.StartArray) throw new JsonException("Expected '['");
+            _jsonReader = jsonReader;
+            jsonReader.Skip();
+        }
 
-            if (!_jsonReader.Read()) throw new JsonException("Expected ']'");
+        public CollectionEnumerator GetEnumerator() => new CollectionEnumerator(_jsonReader);
+    }
 
+    readonly ref struct ClassParser
+    {
+        public readonly double A;
+        public readonly double B;
 
+        public ClassParser(ref Utf8JsonReader jsonReader)
+        {
+            A = default;
+            B = default;
 
-            _jsonReader.Read();
-            if (_jsonReader.TokenType != JsonTokenType.EndArray) throw new JsonException("Expected ']'");
+            if (jsonReader.TokenType == JsonTokenType.None) jsonReader.Read();
+            if (jsonReader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected '{'");
 
-            throw new NotImplementedException();
+            while (jsonReader.TokenType != JsonTokenType.EndObject)
+            {
+                if (!jsonReader.Read()) throw new JsonException("Expected '}'");
+                if (jsonReader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Expected property name");
+                
+                if (jsonReader.ValueTextEquals("PropertyName"))
+                {
+                    jsonReader.Read();
+                    A = jsonReader.GetDouble();
+                }
+                else if (jsonReader.ValueTextEquals("PropertyName"))
+                {
+                    jsonReader.Read();
+                    B = jsonReader.GetDouble();
+                }
+                else
+                {
+                    jsonReader.Read();
+                    jsonReader.Skip();
+                }
+
+                jsonReader.Read();
+            }
         }
     }
 
