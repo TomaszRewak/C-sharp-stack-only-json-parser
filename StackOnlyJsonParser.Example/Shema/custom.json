@@ -1,0 +1,17 @@
+﻿[
+	{
+		"type-name": "Aaa.Bbb.Ccc",
+		"fields": [
+			{
+				"name": "Name",
+				"type": "string",
+				"serialized-name": ["name"]
+			},
+			{
+				"name": "Values",
+				"type": "int[]",
+				"serialized-name": ["values"]
+			}
+		]
+	}
+]
