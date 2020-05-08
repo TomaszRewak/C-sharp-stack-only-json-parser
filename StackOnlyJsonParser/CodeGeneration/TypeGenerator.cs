@@ -28,9 +28,44 @@ namespace {type.Namespace}
 		{{}}
 		internal {type.TypeName}(Utf8JsonReader jsonReader) : this(ref jsonReader)
 		{{
-{Indent}
+{CodeGenetaionHelper.Indent(3, GenerateConstructor(type))}
 		}}
 	}}
+}}
+";
+		}
+
+		private static string GenerateConstructor(JsonType type)
+		{
+			return @$"
+A = default;
+B = default;
+
+if (jsonReader.TokenType == JsonTokenType.None) jsonReader.Read();
+if (jsonReader.TokenType != JsonTokenType.StartObject) throw new JsonException(""Expected '{{'"");
+
+while (jsonReader.TokenType != JsonTokenType.EndObject)
+{{
+	if (!jsonReader.Read()) throw new JsonException(""Expected '}}'"");
+	if (jsonReader.TokenType != JsonTokenType.PropertyName) throw new JsonException(""Expected property name"");
+
+	if (jsonReader.ValueTextEquals(""PropertyName""))
+	{{
+		jsonReader.Read();
+		A = jsonReader.GetDouble();
+	}}
+	else if (jsonReader.ValueTextEquals(""PropertyName""))
+	{{
+		jsonReader.Read();
+		B = jsonReader.GetDouble();
+	}}
+	else
+	{{
+		jsonReader.Read();
+		jsonReader.Skip();
+	}}
+
+	jsonReader.Read();
 }}
 ";
 		}
