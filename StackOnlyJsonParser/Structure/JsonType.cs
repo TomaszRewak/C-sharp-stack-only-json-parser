@@ -6,8 +6,13 @@ namespace StackOnlyJsonParser.Structure
 {
     internal sealed class JsonType
     {
-        public string TypeName { get; set; }
+        public string TypeName { get; }
+        public IReadOnlyCollection<JsonField> Fields { get; }
 
-        public List<JsonField> Fields { get; set; } = new List<JsonField>();
+        public JsonType(string typeName, IEnumerable<JsonField> fields)
+        {
+            TypeName = typeName;
+            Fields = new List<JsonField>(fields);
+        }
     }
 }

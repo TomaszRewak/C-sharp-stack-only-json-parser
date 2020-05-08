@@ -1,35 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace StackOnlyJsonParser.Structure
 {
     internal sealed class JsonFieldType
     {
-        public string Name { get; set; }
-        public List<JsonCollectionKind> ConnectionKind { get; set; } = new List<JsonCollectionKind>();
+        public string Name { get; }
+        public IReadOnlyCollection<JsonCollectionKind> CollectionKind { get; }
 
-        public JsonFieldType() { }
+        public JsonFieldType(string name, IEnumerable<JsonCollectionKind> collectionKind) : this(name)
+        {
+            CollectionKind = CollectionKind.Concat(collectionKind).ToList();
+        }
+
         public JsonFieldType(string type)
         {
+            var collectionKind = new List<JsonCollectionKind>();
+
             while (true)
             {
                 if (type.EndsWith("[]"))
                 {
-                    ConnectionKind.Insert(0, JsonCollectionKind.Array);
+                    collectionKind.Insert(0, JsonCollectionKind.Array);
                     type = type[0..^2];
                     continue;
                 }
 
                 if (type.EndsWith("{}"))
                 {
-                    ConnectionKind.Insert(0, JsonCollectionKind.Dictionary);
+                    collectionKind.Insert(0, JsonCollectionKind.Dictionary);
                     type = type[0..^2];
                     continue;
                 }
 
                 break;
             }
+
+            Name = type;
+            CollectionKind = collectionKind;
         }
     }
 }
