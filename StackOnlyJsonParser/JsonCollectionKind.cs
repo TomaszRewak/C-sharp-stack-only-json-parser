@@ -4,9 +4,9 @@ using System.Text;
 
 namespace StackOnlyJsonParser
 {
-    public enum JsonCollectionKind
-    {
-        Array,
-        Dictionary
-    }
+	public enum JsonCollectionKind
+	{
+		Array,
+		Dictionary
+	}
 }

@@ -10,35 +10,35 @@ using System.Text;
 
 namespace StackOnlyJsonParser
 {
-    [Generator]
-    public class StackOnlyJsonParserGenerator : ISourceGenerator
-    {
-        public void Initialize(InitializationContext context)
-        {
-            context.RegisterForSyntaxNotifications(() => new MySyntaxReceiver());
-        }
+	[Generator]
+	public class StackOnlyJsonParserGenerator : ISourceGenerator
+	{
+		public void Initialize(InitializationContext context)
+		{
+			context.RegisterForSyntaxNotifications(() => new MySyntaxReceiver());
+		}
 
-        public void Execute(SourceGeneratorContext context)
-        {
-            var syntaxReceiver = (MySyntaxReceiver)context.SyntaxReceiver;
-            var compilation = context.Compilation;
+		public void Execute(SourceGeneratorContext context)
+		{
+			var syntaxReceiver = (MySyntaxReceiver)context.SyntaxReceiver;
+			var compilation = context.Compilation;
 
-            var attributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
+			var attributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
 
-            foreach (var classSyntax in syntaxReceiver.Classes)
-            {
-                var semanticModel = compilation.GetSemanticModel(classSyntax.SyntaxTree);
-                var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax);
-                var attribute = typeSymbol.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeSymbol));
+			foreach (var classSyntax in syntaxReceiver.Classes)
+			{
+				var semanticModel = compilation.GetSemanticModel(classSyntax.SyntaxTree);
+				var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax);
+				var attribute = typeSymbol.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeSymbol));
 
-                if (attribute == null) continue;
+				if (attribute == null) continue;
 
-                var typeName = attribute.ConstructorArguments[0].Value as string ?? $"StackOnly{typeSymbol.Name}Parser";
-                var typeNamespace = attribute.ConstructorArguments[1].Value as string ?? GetNamespace(typeSymbol);
+				var typeName = attribute.ConstructorArguments[0].Value as string ?? $"StackOnly{typeSymbol.Name}Parser";
+				var typeNamespace = attribute.ConstructorArguments[1].Value as string ?? GetNamespace(typeSymbol);
 
-                //Console.Error.WriteLine(typeNamespace);
+				//Console.Error.WriteLine(typeNamespace);
 
-                context.AddSource("StackOnlyJsonParser.Generated.cs", SourceText.From($@"
+				context.AddSource("StackOnlyJsonParser.Generated.cs", SourceText.From($@"
 namespace {typeNamespace}
 {{
             public class {typeName}
@@ -57,30 +57,30 @@ namespace {typeNamespace}
         }}
     }}
 }}", Encoding.UTF8));
-            }
-        }
+			}
+		}
 
-        private string GetNamespace(ISymbol symbol)
-        {
-            var namespaces = new List<INamespaceSymbol>();
+		private string GetNamespace(ISymbol symbol)
+		{
+			var namespaces = new List<INamespaceSymbol>();
 
-            for (var currentNamespace = symbol.ContainingNamespace; !currentNamespace.IsGlobalNamespace; currentNamespace = currentNamespace.ContainingNamespace)
-                namespaces.Add(currentNamespace);
+			for (var currentNamespace = symbol.ContainingNamespace; !currentNamespace.IsGlobalNamespace; currentNamespace = currentNamespace.ContainingNamespace)
+				namespaces.Add(currentNamespace);
 
-            return string.Join(".", namespaces.Select(n => n.Name).Reverse());
-        }
-    }
+			return string.Join(".", namespaces.Select(n => n.Name).Reverse());
+		}
+	}
 
-    internal class MySyntaxReceiver : ISyntaxReceiver
-    {
-        public List<ClassDeclarationSyntax> Classes = new List<ClassDeclarationSyntax>();
+	internal class MySyntaxReceiver : ISyntaxReceiver
+	{
+		public List<ClassDeclarationSyntax> Classes = new List<ClassDeclarationSyntax>();
 
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-        {
-            if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax && classDeclarationSyntax.AttributeLists.Count > 0)
-            {
-                Classes.Add(classDeclarationSyntax);
-            }
-        }
-    }
+		public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+		{
+			if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax && classDeclarationSyntax.AttributeLists.Count > 0)
+			{
+				Classes.Add(classDeclarationSyntax);
+			}
+		}
+	}
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace StackOnlyJsonParser
 {
-    public class StrictlyStackOnlyAttribute : Attribute
-    {
-    }
+	public class StrictlyStackOnlyAttribute : Attribute
+	{
+	}
 }

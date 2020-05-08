@@ -5,12 +5,12 @@
 			{
 				"name": "Name",
 				"type": "string",
-				"serialized-name": ["name"]
+				"serialized-names": ["name"]
 			},
 			{
 				"name": "Values",
 				"type": "int[]",
-				"serialized-name": ["values"]
+				"serialized-names": ["values"]
 			}
 		]
 	}
