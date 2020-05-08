@@ -14,7 +14,7 @@ namespace StackOnlyJsonParser
         public ReadOnlySpan<byte> ValueSpan => _jsonReader.ValueSpan;
         public ReadOnlySequence<byte> ValueSequence => _jsonReader.ValueSequence;
 
-        public string Value => _jsonReader.GetString();
+        public string Value => _jsonReader.GetString() ?? throw new InvalidOperationException("String value not available");
 
         internal StackOnlyString(Utf8JsonReader jsonReader)
         {

@@ -6,5 +6,7 @@ namespace StackOnlyJsonParser.Structure
 {
     internal sealed class JsonField
     {
+        public string Name { get; set; }
+        public string Type { get; set; }
     }
 }
