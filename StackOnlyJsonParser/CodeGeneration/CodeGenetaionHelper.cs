@@ -9,6 +9,11 @@ namespace StackOnlyJsonParser.CodeGeneration
 {
 	internal static class CodeGenetaionHelper
 	{
+		public static string JoinLines(IEnumerable<string> lines)
+		{
+			return string.Join('\n', lines);
+		}
+
 		public static string Indent(int tabs, string text)
 		{
 			var lines = text

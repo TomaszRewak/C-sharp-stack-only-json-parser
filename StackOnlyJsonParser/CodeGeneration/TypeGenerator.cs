@@ -20,6 +20,8 @@ namespace {type.Namespace}
 {{
 	readonly ref struct {type.TypeName}
 	{{
+{CodeGenetaionHelper.Indent(2, GenerateFields(type))}
+
 		public {type.TypeName}(ReadOnlySpan<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions {{ CommentHandling = JsonCommentHandling.Skip }}))
 		{{}}
 		public {type.TypeName}(ReadOnlySequence<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions {{ CommentHandling = JsonCommentHandling.Skip }}))
@@ -33,6 +35,16 @@ namespace {type.Namespace}
 	}}
 }}
 ";
+		}
+
+		private static string GenerateFields(JsonType type)
+		{
+			return CodeGenetaionHelper.JoinLines(type.Fields.Select(GenerateField));
+		}
+
+		private static string GenerateField(JsonField field)
+		{
+			return @$"public readonly double A;";
 		}
 
 		private static string GenerateConstructor(JsonType type)
