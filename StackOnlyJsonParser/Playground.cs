@@ -50,10 +50,14 @@ namespace StackOnlyJsonParser
 		public CollectionEnumerator GetEnumerator() => new CollectionEnumerator(_jsonReader);
 	}
 
-	readonly ref struct ClassParser
+	internal readonly ref partial struct ClassParser
 	{
+		public readonly Class2Parser.Collections.ArrayOfArrays Values;
+		public readonly Collections.Int32.ArrayOfArrays Values2;
+
 		public readonly double A;
 		public readonly double B;
+		public readonly double C;
 
 		public ClassParser(ReadOnlySpan<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip }))
 		{ }
@@ -98,5 +102,10 @@ namespace StackOnlyJsonParser
 
 	class Playground
 	{
+		public static void Play()
+		{
+			Utf8JsonReader? jsonReader;
+			jsonReader.Get
+		}
 	}
 }

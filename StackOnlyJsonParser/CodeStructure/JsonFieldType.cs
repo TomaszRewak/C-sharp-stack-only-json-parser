@@ -8,6 +8,29 @@ namespace StackOnlyJsonParser.CodeStructure
 		public string Name { get; }
 		public IReadOnlyCollection<JsonCollectionKind> CollectionKind { get; }
 
+		public string FullName
+		{
+			get
+			{
+				var collectionType = string.Join("", CollectionKind);
+
+				switch (Name)
+				{
+					case "System.Int32":
+					case "System.Int64":
+					case "System.String":
+					case "StackOnlyJsonParser":
+						return CollectionKind.Any()
+							? $"StackOnlyJsonParser.Collections.{Name.Split('.')[1]}{collectionType}Reader"
+							: Name.Split('.')[1];
+					default:
+						return CollectionKind.Any()
+							? $"{Name}.JsonCollections.{collectionType}Reader"
+							: $"{Name}";
+				}
+			}
+		}
+
 		public JsonFieldType(string name, IEnumerable<JsonCollectionKind> collectionKind) : this(name)
 		{
 			CollectionKind = CollectionKind.Concat(collectionKind).ToList();

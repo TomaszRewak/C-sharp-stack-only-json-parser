@@ -8,6 +8,11 @@
 				"serialized-names": ["name"]
 			},
 			{
+				"name": "Surname",
+				"type": "StackOnlyString",
+				"serialized-names": ["name"]
+			},
+			{
 				"name": "Values",
 				"type": "int[]",
 				"serialized-names": ["values"]

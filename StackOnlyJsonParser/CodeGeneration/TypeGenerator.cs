@@ -44,14 +44,13 @@ namespace {type.Namespace}
 
 		private static string GenerateField(JsonField field)
 		{
-			return @$"public readonly double A;";
+			return @$"public readonly {field.Type.FullName} {field.Name};";
 		}
 
 		private static string GenerateConstructor(JsonType type)
 		{
 			return @$"
-A = default;
-B = default;
+{GenerateFieldInitializers(type)}
 
 if (jsonReader.TokenType == JsonTokenType.None) jsonReader.Read();
 if (jsonReader.TokenType != JsonTokenType.StartObject) throw new JsonException(""Expected '{{'"");
@@ -80,6 +79,16 @@ while (jsonReader.TokenType != JsonTokenType.EndObject)
 	jsonReader.Read();
 }}
 ";
+		}
+
+		private static string GenerateFieldInitializers(JsonType type)
+		{
+			return CodeGenetaionHelper.JoinLines(type.Fields.Select(GenerateFieldInitializer));
+		}
+
+		private static string GenerateFieldInitializer(JsonField field)
+		{
+			return $"{field.Name} = default;";
 		}
 	}
 }

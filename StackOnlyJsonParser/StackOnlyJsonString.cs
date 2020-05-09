@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace StackOnlyJsonParser
 {
-	public ref struct StackOnlyString
+	public ref struct StackOnlyJsonString
 	{
 		private readonly Utf8JsonReader _jsonReader;
 
@@ -16,7 +16,7 @@ namespace StackOnlyJsonParser
 
 		public string Value => _jsonReader.GetString() ?? throw new InvalidOperationException("String value not available");
 
-		internal StackOnlyString(Utf8JsonReader jsonReader)
+		internal StackOnlyJsonString(Utf8JsonReader jsonReader)
 		{
 			_jsonReader = jsonReader;
 		}

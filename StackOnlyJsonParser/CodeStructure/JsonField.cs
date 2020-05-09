@@ -5,10 +5,10 @@ namespace StackOnlyJsonParser.CodeStructure
 	internal sealed class JsonField
 	{
 		public string Name { get; }
-		public string Type { get; }
+		public JsonFieldType Type { get; }
 		public IReadOnlyCollection<string> SerializedNames { get; }
 
-		public JsonField(string name, string type, IEnumerable<string> serializedNames)
+		public JsonField(string name, JsonFieldType type, IEnumerable<string> serializedNames)
 		{
 			Name = name;
 			Type = type;
