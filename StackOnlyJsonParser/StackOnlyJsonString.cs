@@ -6,9 +6,11 @@ using System.Text.Json;
 
 namespace StackOnlyJsonParser
 {
-	public ref struct StackOnlyJsonString
+	public readonly ref struct StackOnlyJsonString
 	{
 		private readonly Utf8JsonReader _jsonReader;
+
+		public readonly bool HasValue;
 
 		public bool HasValueSequence => _jsonReader.HasValueSequence;
 		public ReadOnlySpan<byte> ValueSpan => _jsonReader.ValueSpan;
@@ -18,6 +20,7 @@ namespace StackOnlyJsonParser
 
 		internal StackOnlyJsonString(Utf8JsonReader jsonReader)
 		{
+			HasValue = true;
 			_jsonReader = jsonReader;
 		}
 	}

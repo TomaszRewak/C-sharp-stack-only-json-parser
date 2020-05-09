@@ -18,6 +18,8 @@ using System.Text.Json;
 
 namespace {type.Namespace}
 {{
+	public readonly bool HasValue;
+
 	{type.Accesibility} readonly ref partial struct {type.TypeName}
 	{{
 		public {type.TypeName}(ReadOnlySpan<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions {{ CommentHandling = JsonCommentHandling.Skip }}))
@@ -38,6 +40,8 @@ namespace {type.Namespace}
 		private static string GenerateConstructor(JsonType type)
 		{
 			return @$"
+HasValue = true;
+
 {GenerateFieldInitializers(type)}
 
 if (jsonReader.TokenType == JsonTokenType.None) jsonReader.Read();
@@ -98,7 +102,7 @@ if ({GenerateFieldNameCondition(field)})
 				case "System.Double":
 					return $"jsonReader.{type.Split('.')[1]}()";
 				default:
-					return $"new {type}()";
+					return $"new {type}(jsonReader)";
 			}
 		}
 	}
