@@ -1,19 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.CodeAnalysis;
+using System.Collections.Generic;
 
 namespace StackOnlyJsonParser.CodeStructure
 {
 	internal sealed class JsonType
 	{
-		public string Namespace { get; set; }
+		public Accessibility Accesibility { get; }
+		public string Namespace { get; }
 		public string TypeName { get; }
 		public IReadOnlyCollection<JsonField> Fields { get; }
 
-		public JsonType(string fullTypeName, IEnumerable<JsonField> fields)
+		public JsonType(Accessibility accessibility, string @namespace, string typeName, IEnumerable<JsonField> fields)
 		{
-			var lastDot = fullTypeName.LastIndexOf('.');
-
-			Namespace = fullTypeName[..lastDot];
-			TypeName = fullTypeName[lastDot..];
+			Namespace = @namespace;
+			TypeName = typeName;
 			Fields = new List<JsonField>(fields);
 		}
 	}

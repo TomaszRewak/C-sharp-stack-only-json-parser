@@ -18,33 +18,21 @@ using System.Text.Json;
 
 namespace {type.Namespace}
 {{
-	readonly ref struct {type.TypeName}
+	{type.Accesibility} readonly ref partial struct {type.TypeName}
 	{{
-{CodeGenetaionHelper.Indent(2, GenerateFields(type))}
-
 		public {type.TypeName}(ReadOnlySpan<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions {{ CommentHandling = JsonCommentHandling.Skip }}))
 		{{}}
 		public {type.TypeName}(ReadOnlySequence<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions {{ CommentHandling = JsonCommentHandling.Skip }}))
 		{{}}
 		private {type.TypeName}(Utf8JsonReader jsonReader) : this(ref jsonReader)
 		{{}}
-		internal {type.TypeName}(Utf8JsonReader jsonReader) : this(ref jsonReader)
+		internal {type.TypeName}(ref Utf8JsonReader jsonReader)
 		{{
 {CodeGenetaionHelper.Indent(3, GenerateConstructor(type))}
 		}}
 	}}
 }}
 ";
-		}
-
-		private static string GenerateFields(JsonType type)
-		{
-			return CodeGenetaionHelper.JoinLines(type.Fields.Select(GenerateField));
-		}
-
-		private static string GenerateField(JsonField field)
-		{
-			return @$"public readonly {field.Type.FullName} {field.Name};";
 		}
 
 		private static string GenerateConstructor(JsonType type)
@@ -60,16 +48,7 @@ while (jsonReader.TokenType != JsonTokenType.EndObject)
 	if (!jsonReader.Read()) throw new JsonException(""Expected '}}'"");
 	if (jsonReader.TokenType != JsonTokenType.PropertyName) throw new JsonException(""Expected property name"");
 
-	if (jsonReader.ValueTextEquals(""PropertyName""))
-	{{
-		jsonReader.Read();
-		A = jsonReader.GetDouble();
-	}}
-	else if (jsonReader.ValueTextEquals(""PropertyName""))
-	{{
-		jsonReader.Read();
-		B = jsonReader.GetDouble();
-	}}
+{CodeGenetaionHelper.Indent(1, GenerateFieldDeserializers(type))}
 	else
 	{{
 		jsonReader.Read();
@@ -89,6 +68,38 @@ while (jsonReader.TokenType != JsonTokenType.EndObject)
 		private static string GenerateFieldInitializer(JsonField field)
 		{
 			return $"{field.Name} = default;";
+		}
+
+		private static string GenerateFieldDeserializers(JsonType type)
+		{
+			return CodeGenetaionHelper.JoinLines("else ", type.Fields.Select(GenerateFieldDeserializer));
+		}
+
+		private static string GenerateFieldDeserializer(JsonField field)
+		{
+			return $@"
+if ({GenerateFieldNameCondition(field)})
+{{
+	jsonReader.Read();
+	{field.Name} = {GenerateFieldDeserializer(field.Type)};
+}}";
+		}
+
+		private static string GenerateFieldNameCondition(JsonField field)
+		{
+			return string.Join(" || ", field.SerializedNames.Select(name => @$"jsonReader.ValueTextEquals(""{name}"")"));
+		}
+
+		private static string GenerateFieldDeserializer(string type)
+		{
+			switch (type)
+			{
+				case "System.Int32":
+				case "System.Double":
+					return $"jsonReader.{type.Split('.')[1]}()";
+				default:
+					return $"new {type}()";
+			}
 		}
 	}
 }

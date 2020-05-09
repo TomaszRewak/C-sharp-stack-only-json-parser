@@ -36,6 +36,8 @@ namespace StackOnlyJsonParser
 				var typeName = attribute.ConstructorArguments[0].Value as string ?? $"StackOnly{typeSymbol.Name}Parser";
 				var typeNamespace = attribute.ConstructorArguments[1].Value as string ?? GetNamespace(typeSymbol);
 
+				typeSymbol.DeclaredAccessibility == Accessibility.Public.ToString();
+
 				//Console.Error.WriteLine(typeNamespace);
 
 				context.AddSource("StackOnlyJsonParser.Generated.cs", SourceText.From($@"

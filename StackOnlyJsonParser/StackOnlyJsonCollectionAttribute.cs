@@ -2,7 +2,7 @@
 
 namespace StackOnlyJsonParser
 {
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+	[AttributeUsage(AttributeTargets.Struct, AllowMultiple = true, Inherited = false)]
 	public class StackOnlyJsonCollectionAttribute : Attribute
 	{
 		public StackOnlyJsonCollectionAttribute(params JsonCollectionKind[] collectionKind)

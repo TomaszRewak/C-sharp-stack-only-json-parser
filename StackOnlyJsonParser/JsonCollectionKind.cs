@@ -6,7 +6,7 @@ namespace StackOnlyJsonParser
 {
 	public enum JsonCollectionKind
 	{
-		Array,
-		Dictionary
+		ArrayOf,
+		DictionaryOf
 	}
 }
