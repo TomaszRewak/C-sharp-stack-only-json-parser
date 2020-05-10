@@ -45,7 +45,32 @@ namespace {array.Namespace}
 		}}
 
 		public bool Any() => HasValue && _jsonReader.TokenType != JsonTokenType.EndArray;
-		public CollectionEnumerator GetEnumerator() => new CollectionEnumerator(_jsonReader);
+		public Enumerator GetEnumerator() => new Enumerator(_jsonReader);
+
+		public struct Enumerator
+		{{
+			private Utf8JsonReader _jsonReader;
+
+			public CollectionEnumerator(in Utf8JsonReader jsonReader)
+			{{
+				_jsonReader = jsonReader;
+				Current = default;
+
+				_jsonReader.Read();
+			}}
+
+			public double Current {{ get; private set; }}
+
+			public bool MoveNext()
+			{{
+				if (jsonReader.TokenType == JsonTokenType.EndArray) return false;
+
+				Current = {DeserializationGenerator.Generate("_jsonReader", array.ElementType)}
+				_jsonReader.Read();
+
+				return true;
+			}}
+		}}
 	}}
 }}
 ";

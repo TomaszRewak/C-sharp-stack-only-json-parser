@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using StackOnlyJsonParser.CodeAnalysis;
 using StackOnlyJsonParser.CodeGeneration;
 using StackOnlyJsonParser.CodeStructure;
 using System;
@@ -25,36 +26,45 @@ namespace StackOnlyJsonParser
 			var syntaxReceiver = (MySyntaxReceiver)context.SyntaxReceiver;
 			var compilation = context.Compilation;
 
-			var attributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
+			var typeAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
+			var arrayAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
 
 			//Console.Error.WriteLine("Aaaa");
 
 			foreach (var classSyntax in syntaxReceiver.Structs)
 			{
 				var semanticModel = compilation.GetSemanticModel(classSyntax.SyntaxTree);
-				var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax);
-				var attribute = typeSymbol.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeSymbol));
+				var type = semanticModel.GetDeclaredSymbol(classSyntax);
 
-				if (attribute == null) continue;
-
-				var typeName = typeSymbol.Name;
-				var typeNamespace = GetNamespace(typeSymbol);
-				var fields = typeSymbol.GetMembers().OfType<IFieldSymbol>();
-
-				var jsonFields = fields
-					.Select(field => new JsonField(
-						field.Name,
-						$"{GetNamespace(field.Type)}.{field.Type.Name}",
-						new[] { field.Name }));
-
-				var structure = new JsonType(
-					"public",
-					typeNamespace,
-					typeName,
-					jsonFields);
-
-				context.AddSource($"{typeName}.Generated.cs", SourceText.From(TypeGenerator.Generate(structure), Encoding.UTF8));
+				if (type.HasAttribute(typeAttributeSymbol))
+					GenerateType(context, type);
 			}
+		}
+
+		private void GenerateType(SourceGeneratorContext context, INamedTypeSymbol type)
+		{
+			var typeName = type.Name;
+			var typeNamespace = GetNamespace(type);
+			var fields = type.GetMembers().OfType<IFieldSymbol>();
+
+			var jsonFields = fields
+				.Select(field => new JsonField(
+					field.Name,
+					GetFullName(field.Type),
+					new[] { field.Name }));
+
+			var structure = new JsonType(
+				"public",
+				typeNamespace,
+				typeName,
+				jsonFields);
+
+			context.AddSource($"{typeName}.Generated.cs", SourceText.From(TypeGenerator.Generate(structure), Encoding.UTF8));
+		}
+
+		private string GetFullName(ITypeSymbol symbol)
+		{
+			return $"{GetNamespace(symbol)}.{symbol.Name}";
 		}
 
 		private string GetNamespace(ISymbol symbol)

@@ -96,26 +96,13 @@ switch (jsonReader.TokenType)
 if ({GenerateFieldNameCondition(field)})
 {{
 	jsonReader.Read();
-	{field.Name} = {GenerateFieldDeserializer(field.Type)};
+	{field.Name} = {DeserializationGenerator.Generate("jsonReader", field.Type)};
 }}";
 		}
 
 		private static string GenerateFieldNameCondition(JsonField field)
 		{
 			return string.Join(" || ", field.SerializedNames.Select(name => $@"jsonReader.ValueTextEquals(""{name}"")"));
-		}
-
-		private static string GenerateFieldDeserializer(string type)
-		{
-			switch (type)
-			{
-				case "System.Int32":
-				case "System.Double":
-				case "System.String":
-					return $"jsonReader.Get{type.Split('.')[1]}()";
-				default:
-					return $"new {type}(ref jsonReader)";
-			}
 		}
 	}
 }
