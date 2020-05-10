@@ -31,6 +31,7 @@ namespace {array.Namespace}
 				case JsonTokenType.StartArray:
 					HasValue = true;
 					_jsonReader = jsonReader;
+					_jsonReader.Read();
 					jsonReader.Skip();
 					break;
 
@@ -55,8 +56,6 @@ namespace {array.Namespace}
 			{{
 				_jsonReader = jsonReader;
 				Current = default;
-
-				_jsonReader.Read();
 			}}
 
 			public {array.ElementType} Current {{ get; private set; }}

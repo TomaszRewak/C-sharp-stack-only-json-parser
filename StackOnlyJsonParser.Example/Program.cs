@@ -16,7 +16,7 @@ namespace StackOnlyJsonParser.Example
 				Price = 1.2,
 				Id1 = 1,
 				Id2 = 2,
-				Sizes = new[] { 100, 200, 300 },
+				Sizes = new int[] { 100, 200, 300 },
 				MainColor = new
 				{
 					R = 200,
