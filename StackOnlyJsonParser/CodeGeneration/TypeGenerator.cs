@@ -56,12 +56,7 @@ while (jsonReader.TokenType != JsonTokenType.EndObject)
 	else
 	{{
 		jsonReader.Read();
-
-		if (jsonReader.TokenType == JsonTokenType.StartObject || jsonReader.TokenType == JsonTokenType.StartArray)
-		{{
-			jsonReader.Skip();
-			jsonReader.Read();
-		}}
+		jsonReader.Skip();
 	}}
 
 	jsonReader.Read();

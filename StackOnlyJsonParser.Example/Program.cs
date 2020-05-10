@@ -8,8 +8,10 @@ namespace StackOnlyJsonParser.Example
 	{
 		static void Main(string[] args)
 		{
-			var bytes = JsonSerializer.SerializeToUtf8Bytes(new {
+			var bytes = JsonSerializer.SerializeToUtf8Bytes(new
+			{
 				Name = "Some name",
+				Values = new[] { 4, 5, 6 },
 				Price = 1.2,
 				Id1 = 1,
 				Id2 = 2
