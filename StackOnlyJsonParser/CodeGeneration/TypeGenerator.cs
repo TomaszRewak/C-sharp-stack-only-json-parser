@@ -99,9 +99,10 @@ if ({GenerateFieldNameCondition(field)})
 			{
 				case "System.Int32":
 				case "System.Double":
+				case "System.String":
 					return $"jsonReader.Get{type.Split('.')[1]}()";
 				default:
-					return $"new {type}(jsonReader)";
+					return $"new {type}(ref jsonReader)";
 			}
 		}
 	}

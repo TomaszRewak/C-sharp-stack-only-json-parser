@@ -16,11 +16,14 @@ namespace StackOnlyJsonParser
 		public ReadOnlySpan<byte> ValueSpan => _jsonReader.ValueSpan;
 		public ReadOnlySequence<byte> ValueSequence => _jsonReader.ValueSequence;
 
-		public string Value => _jsonReader.GetString() ?? throw new InvalidOperationException("String value not available");
+		public override string ToString() => HasValue ? _jsonReader.GetString() : null;
 
-		internal StackOnlyJsonString(Utf8JsonReader jsonReader)
+		public StackOnlyJsonString(ref Utf8JsonReader jsonReader)
 		{
-			HasValue = true;
+			if (jsonReader.TokenType != JsonTokenType.String && jsonReader.TokenType != JsonTokenType.Null) jsonReader.Read();
+			if (jsonReader.TokenType != JsonTokenType.String && jsonReader.TokenType != JsonTokenType.Null) throw new JsonException($"Expected string, but got { jsonReader.TokenType }");
+
+			HasValue = jsonReader.TokenType != JsonTokenType.Null;
 			_jsonReader = jsonReader;
 		}
 	}

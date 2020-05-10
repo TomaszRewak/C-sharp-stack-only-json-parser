@@ -13,14 +13,10 @@ namespace StackOnlyJsonParser.Example.Model
 	{
 		public readonly int Id1;
 		public readonly int Id2;
-
-		//[StackOnlyJsonField]
-		//public readonly string Name;
+		public readonly string Name;
+		public readonly StackOnlyJsonString Surname;
 
 		//[StackOnlyJsonField]
 		//public readonly double? Price;
-
-		//[StackOnlyJsonProperty]
-		//public readonly StackOnlyJsonString Surname;
 	}
 }
