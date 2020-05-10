@@ -21,7 +21,8 @@ namespace StackOnlyJsonParser.Example
 					R = 200,
 					G = 100,
 					B = 30
-				}
+				},
+				PackageColor = (object)null
 			});
 
 			var product = new Product(bytes);
@@ -32,6 +33,8 @@ namespace StackOnlyJsonParser.Example
 			Console.WriteLine(product.Surname.ToString());
 			Console.WriteLine(product.MainColor.HasValue);
 			Console.WriteLine($"{product.MainColor.R} {product.MainColor.G} {product.MainColor.B}");
+			Console.WriteLine(product.PackageColor.HasValue);
+			Console.WriteLine(product.LogoColor.HasValue);
 		}
 	}
 }

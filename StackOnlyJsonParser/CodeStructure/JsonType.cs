@@ -10,9 +10,9 @@ namespace StackOnlyJsonParser.CodeStructure
 		public string TypeName { get; }
 		public IReadOnlyCollection<JsonField> Fields { get; }
 
-		public JsonType(Accessibility accessibility, string @namespace, string typeName, IEnumerable<JsonField> fields)
+		public JsonType(string accessibility, string @namespace, string typeName, IEnumerable<JsonField> fields)
 		{
-			Accesibility = accessibility.ToString().ToLower();
+			Accesibility = accessibility;
 			Namespace = @namespace;
 			TypeName = typeName;
 			Fields = new List<JsonField>(fields);

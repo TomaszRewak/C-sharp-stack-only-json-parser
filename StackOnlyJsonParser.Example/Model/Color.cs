@@ -14,7 +14,7 @@ namespace StackOnlyJsonParser.Example.Model
 		public readonly int B;
 	}
 
-	[StackOnlyJsonArray]
+	[StackOnlyJsonArray(typeof(Color))]
 	public readonly ref partial struct ColorArray
 	{ }
 }

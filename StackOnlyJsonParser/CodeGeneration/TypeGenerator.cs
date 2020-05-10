@@ -11,7 +11,7 @@ namespace StackOnlyJsonParser.CodeGeneration
 	{
 		public static string Generate(JsonType type)
 		{
-			return @$"
+			return $@"
 using System;
 using System.Buffers;
 using System.Text.Json;
@@ -39,26 +39,38 @@ namespace {type.Namespace}
 
 		private static string GenerateConstructor(JsonType type)
 		{
-			return @$"
-HasValue = true;
+			return $@"
 {GenerateFieldInitializers(type)}
 
-if (jsonReader.TokenType != JsonTokenType.StartObject) jsonReader.Read();
-if (jsonReader.TokenType != JsonTokenType.StartObject) throw new JsonException($""Expected '{{{{', but got {{jsonReader.TokenType}}"");
+if (jsonReader.TokenType != JsonTokenType.StartObject && jsonReader.TokenType != JsonTokenType.Null) jsonReader.Read();
 
-jsonReader.Read();
-
-while (jsonReader.TokenType != JsonTokenType.EndObject)
+switch (jsonReader.TokenType)
 {{
-	if (jsonReader.TokenType != JsonTokenType.PropertyName) throw new JsonException($""Expected property name or '}}}}', but got {{jsonReader.TokenType}}"");
+	case JsonTokenType.StartObject:
+		HasValue = true;
+		jsonReader.Read();
 
-{CodeGenetaionHelper.Indent(1, GenerateFieldDeserializers(type))}
-	else
-	{{
-		jsonReader.Skip();
-	}}
+		while (jsonReader.TokenType != JsonTokenType.EndObject)
+		{{
+			if (jsonReader.TokenType != JsonTokenType.PropertyName) throw new JsonException($""Expected property name or '}}}}', but got {{jsonReader.TokenType}}"");
 
-	jsonReader.Read();
+		{CodeGenetaionHelper.Indent(1, GenerateFieldDeserializers(type))}
+			else
+			{{
+				jsonReader.Skip();
+			}}
+
+			jsonReader.Read();
+		}}
+
+		break;
+
+	case JsonTokenType.Null:
+		HasValue = false;
+		break;
+	
+	default:
+		throw new JsonException($""Expected '{{{{', but got {{jsonReader.TokenType}}"");
 }}
 ";
 		}
@@ -90,7 +102,7 @@ if ({GenerateFieldNameCondition(field)})
 
 		private static string GenerateFieldNameCondition(JsonField field)
 		{
-			return string.Join(" || ", field.SerializedNames.Select(name => @$"jsonReader.ValueTextEquals(""{name}"")"));
+			return string.Join(" || ", field.SerializedNames.Select(name => $@"jsonReader.ValueTextEquals(""{name}"")"));
 		}
 
 		private static string GenerateFieldDeserializer(string type)

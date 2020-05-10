@@ -48,7 +48,7 @@ namespace StackOnlyJsonParser
 						new[] { field.Name }));
 
 				var structure = new JsonType(
-					Accessibility.Public,
+					"public",
 					typeNamespace,
 					typeName,
 					jsonFields);
