@@ -55,7 +55,6 @@ while (jsonReader.TokenType != JsonTokenType.EndObject)
 {CodeGenetaionHelper.Indent(1, GenerateFieldDeserializers(type))}
 	else
 	{{
-		jsonReader.Read();
 		jsonReader.Skip();
 	}}
 
