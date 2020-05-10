@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.CodeAnalysis.Text;
 using StackOnlyJsonParser.CodeAnalysis;
 using StackOnlyJsonParser.CodeGeneration;
@@ -27,7 +28,7 @@ namespace StackOnlyJsonParser
 			var compilation = context.Compilation;
 
 			var typeAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
-			var arrayAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
+			var arrayAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonArrayAttribute).FullName);
 
 			//Console.Error.WriteLine("Aaaa");
 
@@ -38,43 +39,40 @@ namespace StackOnlyJsonParser
 
 				if (type.HasAttribute(typeAttributeSymbol))
 					GenerateType(context, type);
+
+				if (type.HasAttribute(arrayAttributeSymbol))
+					GenerateArray(context, type, type.GetAttribute(arrayAttributeSymbol));
 			}
 		}
 
 		private void GenerateType(SourceGeneratorContext context, INamedTypeSymbol type)
 		{
-			var typeName = type.Name;
-			var typeNamespace = GetNamespace(type);
-			var fields = type.GetMembers().OfType<IFieldSymbol>();
-
-			var jsonFields = fields
+			var jsonFields = type
+				.GetMembers()
+				.OfType<IFieldSymbol>()
 				.Select(field => new JsonField(
 					field.Name,
-					GetFullName(field.Type),
+					field.Type.GetFullName(),
 					new[] { field.Name }));
 
 			var structure = new JsonType(
 				"public",
-				typeNamespace,
-				typeName,
+				type.GetNamespace(),
+				type.Name,
 				jsonFields);
 
-			context.AddSource($"{typeName}.Generated.cs", SourceText.From(TypeGenerator.Generate(structure), Encoding.UTF8));
+			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(TypeGenerator.Generate(structure), Encoding.UTF8));
 		}
 
-		private string GetFullName(ITypeSymbol symbol)
+		private void GenerateArray(SourceGeneratorContext context, INamedTypeSymbol type, AttributeData attributeData)
 		{
-			return $"{GetNamespace(symbol)}.{symbol.Name}";
-		}
+			var structure = new JsonArray(
+				"public",
+				type.GetNamespace(),
+				type.Name,
+				((INamedTypeSymbol)attributeData.ConstructorArguments[0].Value).GetFullName());
 
-		private string GetNamespace(ISymbol symbol)
-		{
-			var namespaces = new List<INamespaceSymbol>();
-
-			for (var currentNamespace = symbol.ContainingNamespace; !currentNamespace.IsGlobalNamespace; currentNamespace = currentNamespace.ContainingNamespace)
-				namespaces.Add(currentNamespace);
-
-			return string.Join(".", namespaces.Select(n => n.Name).Reverse());
+			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(ArrayGenerator.Generate(structure), Encoding.UTF8));
 		}
 	}
 

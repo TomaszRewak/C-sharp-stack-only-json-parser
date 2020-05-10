@@ -11,11 +11,12 @@ namespace StackOnlyJsonParser.Example
 			var bytes = JsonSerializer.SerializeToUtf8Bytes(new
 			{
 				Name = "Some name",
-				Surname = "Some surname",
+				ShortName = "Some short name",
 				Values = new[] { 4, 5, 6 },
 				Price = 1.2,
 				Id1 = 1,
 				Id2 = 2,
+				Sizes = new[] { 100, 200, 300 },
 				MainColor = new
 				{
 					R = 200,
@@ -30,11 +31,14 @@ namespace StackOnlyJsonParser.Example
 			Console.WriteLine(product.Id1);
 			Console.WriteLine(product.Id2);
 			Console.WriteLine(product.Name);
-			Console.WriteLine(product.Surname.ToString());
+			Console.WriteLine(product.ShortName.ToString());
 			Console.WriteLine(product.MainColor.HasValue);
 			Console.WriteLine($"{product.MainColor.R} {product.MainColor.G} {product.MainColor.B}");
 			Console.WriteLine(product.PackageColor.HasValue);
 			Console.WriteLine(product.LogoColor.HasValue);
+			Console.WriteLine(product.Sizes.Any());
+			foreach (var size in product.Sizes)
+				Console.WriteLine($"size {size}");
 		}
 	}
 }

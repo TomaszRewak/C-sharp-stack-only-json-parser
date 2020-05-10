@@ -22,11 +22,11 @@ namespace {array.Namespace}
 
 		public readonly bool HasValue;
 
-		public CollectionEnumerable(ref Utf8JsonReader jsonReader)
+		public {array.TypeName}(ref Utf8JsonReader jsonReader)
 		{{
 			if (jsonReader.TokenType != JsonTokenType.StartArray && jsonReader.TokenType != JsonTokenType.Null) jsonReader.Read();
 
-			swith (jsonReader.TokenType)
+			switch (jsonReader.TokenType)
 			{{
 				case JsonTokenType.StartArray:
 					HasValue = true;
@@ -47,11 +47,11 @@ namespace {array.Namespace}
 		public bool Any() => HasValue && _jsonReader.TokenType != JsonTokenType.EndArray;
 		public Enumerator GetEnumerator() => new Enumerator(_jsonReader);
 
-		public struct Enumerator
+		public ref struct Enumerator
 		{{
 			private Utf8JsonReader _jsonReader;
 
-			public CollectionEnumerator(in Utf8JsonReader jsonReader)
+			public Enumerator(in Utf8JsonReader jsonReader)
 			{{
 				_jsonReader = jsonReader;
 				Current = default;
@@ -59,13 +59,13 @@ namespace {array.Namespace}
 				_jsonReader.Read();
 			}}
 
-			public double Current {{ get; private set; }}
+			public {array.ElementType} Current {{ get; private set; }}
 
 			public bool MoveNext()
 			{{
-				if (jsonReader.TokenType == JsonTokenType.EndArray) return false;
+				if (_jsonReader.TokenType == JsonTokenType.EndArray) return false;
 
-				Current = {DeserializationGenerator.Generate("_jsonReader", array.ElementType)}
+				Current = {DeserializationGenerator.Generate("_jsonReader", array.ElementType)};
 				_jsonReader.Read();
 
 				return true;
