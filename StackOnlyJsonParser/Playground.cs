@@ -52,8 +52,8 @@ namespace StackOnlyJsonParser
 
 	internal readonly ref partial struct ClassParser
 	{
-		public readonly Class2Parser.Collections.ArrayOfArrays Values;
-		public readonly Collections.Int32.ArrayOfArrays Values2;
+		//public readonly Class2Parser.Collections.ArrayOfArrays Values;
+		//public readonly Collections.Int32.ArrayOfArrays Values2;
 
 		public readonly double A;
 		public readonly double B;
@@ -70,6 +70,7 @@ namespace StackOnlyJsonParser
 		{
 			A = default;
 			B = default;
+			C = default;
 
 			if (jsonReader.TokenType == JsonTokenType.None) jsonReader.Read();
 			if (jsonReader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected '{'");
@@ -104,8 +105,6 @@ namespace StackOnlyJsonParser
 	{
 		public static void Play()
 		{
-			Utf8JsonReader? jsonReader;
-			jsonReader.Get
 		}
 	}
 }

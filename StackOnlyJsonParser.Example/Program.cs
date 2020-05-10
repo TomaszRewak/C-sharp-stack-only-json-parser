@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using StackOnlyJsonParser.Example.Model;
 
 namespace StackOnlyJsonParser.Example
@@ -7,9 +8,14 @@ namespace StackOnlyJsonParser.Example
 	{
 		static void Main(string[] args)
 		{
-			StackOnlyProduct.GeneratedMethod();
+			var bytes = JsonSerializer.SerializeToUtf8Bytes(new {
+				Name = "Some name",
+				Price = 1.2
+			});
 
-			Console.WriteLine("Hello World!");
+			var product = new Product(bytes);
+
+			Console.WriteLine(product.Name);
 		}
 	}
 }

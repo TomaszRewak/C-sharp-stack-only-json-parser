@@ -2,6 +2,8 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using StackOnlyJsonParser.CodeGeneration;
+using StackOnlyJsonParser.CodeStructure;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,7 +27,9 @@ namespace StackOnlyJsonParser
 
 			var attributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
 
-			foreach (var classSyntax in syntaxReceiver.Classes)
+			Console.Error.WriteLine("Aaaas");
+
+			foreach (var classSyntax in syntaxReceiver.Structs)
 			{
 				var semanticModel = compilation.GetSemanticModel(classSyntax.SyntaxTree);
 				var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax);
@@ -33,32 +37,16 @@ namespace StackOnlyJsonParser
 
 				if (attribute == null) continue;
 
-				var typeName = attribute.ConstructorArguments[0].Value as string ?? $"StackOnly{typeSymbol.Name}Parser";
-				var typeNamespace = attribute.ConstructorArguments[1].Value as string ?? GetNamespace(typeSymbol);
+				var typeName = typeSymbol.Name;
+				var typeNamespace = GetNamespace(typeSymbol);
 
-				typeSymbol.DeclaredAccessibility == Accessibility.Public.ToString();
+				var structure = new JsonType(
+					Accessibility.Public,
+					typeNamespace,
+					typeName,
+					new List<JsonField>());
 
-				//Console.Error.WriteLine(typeNamespace);
-
-				context.AddSource("StackOnlyJsonParser.Generated.cs", SourceText.From($@"
-namespace {typeNamespace}
-{{
-            public class {typeName}
-    {{
-        public static void GeneratedMethod()
-        {{
-            // generated code
-        }}
-        public static void GeneratedMethod2()
-        {{
-            // generated code
-        }}
-        internal static void GeneratedMethod3()
-        {{
-            // generated code
-        }}
-    }}
-}}", Encoding.UTF8));
+				context.AddSource($"{typeName}.Generated.cs", SourceText.From(TypeGenerator.Generate(structure), Encoding.UTF8));
 			}
 		}
 
@@ -75,13 +63,13 @@ namespace {typeNamespace}
 
 	internal class MySyntaxReceiver : ISyntaxReceiver
 	{
-		public List<ClassDeclarationSyntax> Classes = new List<ClassDeclarationSyntax>();
+		public List<StructDeclarationSyntax> Structs = new List<StructDeclarationSyntax>();
 
 		public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
 		{
-			if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax && classDeclarationSyntax.AttributeLists.Count > 0)
+			if (syntaxNode is StructDeclarationSyntax structDeclarationSyntax && structDeclarationSyntax.AttributeLists.Count > 0)
 			{
-				Classes.Add(classDeclarationSyntax);
+				Structs.Add(structDeclarationSyntax);
 			}
 		}
 	}

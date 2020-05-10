@@ -28,7 +28,7 @@ namespace {type.Namespace}
 		{{}}
 		private {type.TypeName}(Utf8JsonReader jsonReader) : this(ref jsonReader)
 		{{}}
-		internal {type.TypeName}(ref Utf8JsonReader jsonReader)
+		public {type.TypeName}(ref Utf8JsonReader jsonReader)
 		{{
 {CodeGenetaionHelper.Indent(3, GenerateConstructor(type))}
 		}}
