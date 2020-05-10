@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StackOnlyJsonParser.Example.Model
 {
-	[StackOnlyJsonType()]
+	[StackOnlyJsonType]
 	[StackOnlyJsonCollection(JsonCollectionKind.ArrayOf, JsonCollectionKind.DictionaryOf)]
 	[StackOnlyJsonCollection(JsonCollectionKind.ArrayOf, JsonCollectionKind.ArrayOf)]
 	public readonly ref partial struct Product
@@ -15,8 +15,6 @@ namespace StackOnlyJsonParser.Example.Model
 		public readonly int Id2;
 		public readonly string Name;
 		public readonly StackOnlyJsonString Surname;
-
-		//[StackOnlyJsonField]
-		//public readonly double? Price;
+		public readonly Color MainColor;
 	}
 }

@@ -15,7 +15,13 @@ namespace StackOnlyJsonParser.Example
 				Values = new[] { 4, 5, 6 },
 				Price = 1.2,
 				Id1 = 1,
-				Id2 = 2
+				Id2 = 2,
+				MainColor = new
+				{
+					R = 200,
+					G = 100,
+					B = 30
+				}
 			});
 
 			var product = new Product(bytes);
@@ -24,6 +30,8 @@ namespace StackOnlyJsonParser.Example
 			Console.WriteLine(product.Id2);
 			Console.WriteLine(product.Name);
 			Console.WriteLine(product.Surname.ToString());
+			Console.WriteLine(product.MainColor.HasValue);
+			Console.WriteLine($"{product.MainColor.R} {product.MainColor.G} {product.MainColor.B}");
 		}
 	}
 }

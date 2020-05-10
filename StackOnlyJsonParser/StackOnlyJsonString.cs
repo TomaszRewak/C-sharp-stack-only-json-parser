@@ -16,6 +16,10 @@ namespace StackOnlyJsonParser
 		public ReadOnlySpan<byte> ValueSpan => _jsonReader.ValueSpan;
 		public ReadOnlySequence<byte> ValueSequence => _jsonReader.ValueSequence;
 
+		public bool ValueTextEquals(string text) => _jsonReader.ValueTextEquals(text);
+		public bool ValueTextEquals(ReadOnlySpan<char> text) => _jsonReader.ValueTextEquals(text);
+		public bool ValueTextEquals(ReadOnlySpan<byte> utf8Text) => _jsonReader.ValueTextEquals(utf8Text);
+
 		public override string ToString() => HasValue ? _jsonReader.GetString() : null;
 
 		public StackOnlyJsonString(ref Utf8JsonReader jsonReader)
