@@ -21,6 +21,6 @@ namespace StackOnlyJsonParser.Example.Model
 		public readonly Color MainColor;
 		public readonly Color PackageColor;
 		public readonly Color LogoColor;
-		//public readonly ColorArray AdditinalColors;
+		public readonly ColorArray AdditinalColors;
 	}
 }

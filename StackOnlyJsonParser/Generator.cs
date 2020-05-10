@@ -15,7 +15,7 @@ using System.Text;
 namespace StackOnlyJsonParser
 {
 	[Generator]
-	public class StackOnlyJsonCodeGenerator : ISourceGenerator
+	internal class Generator : ISourceGenerator
 	{
 		public void Initialize(InitializationContext context)
 		{

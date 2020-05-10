@@ -23,7 +23,11 @@ namespace StackOnlyJsonParser.Example
 					G = 100,
 					B = 30
 				},
-				PackageColor = (object)null
+				PackageColor = (object)null,
+				AdditinalColors = new[] {
+					new { R = 1, G = 2, B = 3 },
+					new { R = 4, G = 5, B = 6 }
+				}
 			});
 
 			var product = new Product(bytes);
@@ -39,6 +43,8 @@ namespace StackOnlyJsonParser.Example
 			Console.WriteLine(product.Sizes.Any());
 			foreach (var size in product.Sizes)
 				Console.WriteLine($"size {size}");
+			foreach (var color in product.AdditinalColors)
+				Console.WriteLine($"color {color.R}, {color.G}, {color.B}");
 		}
 	}
 }
