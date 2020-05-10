@@ -2,6 +2,6 @@
 
 namespace StackOnlyJsonParser
 {
-	public class StackOnlyJsonPropertyAttribute : Attribute
+	public class StackOnlyJsonFieldAttribute : Attribute
 	{ }
 }

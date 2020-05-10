@@ -11,16 +11,16 @@ namespace StackOnlyJsonParser.Example.Model
 	[StackOnlyJsonCollection(JsonCollectionKind.ArrayOf, JsonCollectionKind.ArrayOf)]
 	public readonly ref partial struct Product
 	{
-		[StackOnlyJsonProperty]
-		public readonly int Id;
+		public readonly int Id1;
+		public readonly int Id2;
 
-		[StackOnlyJsonProperty]
-		public readonly string Name;
+		//[StackOnlyJsonField]
+		//public readonly string Name;
 
-		[StackOnlyJsonProperty]
-		public readonly double? Price;
+		//[StackOnlyJsonField]
+		//public readonly double? Price;
 
-		[StackOnlyJsonProperty]
-		public readonly StackOnlyJsonString Surname;
+		//[StackOnlyJsonProperty]
+		//public readonly StackOnlyJsonString Surname;
 	}
 }

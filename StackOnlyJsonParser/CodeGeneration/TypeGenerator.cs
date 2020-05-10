@@ -18,10 +18,10 @@ using System.Text.Json;
 
 namespace {type.Namespace}
 {{
-	public readonly bool HasValue;
-
 	{type.Accesibility} readonly ref partial struct {type.TypeName}
 	{{
+		public readonly bool HasValue;
+
 		public {type.TypeName}(ReadOnlySpan<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions {{ CommentHandling = JsonCommentHandling.Skip }}))
 		{{}}
 		public {type.TypeName}(ReadOnlySequence<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions {{ CommentHandling = JsonCommentHandling.Skip }}))
@@ -41,22 +41,27 @@ namespace {type.Namespace}
 		{
 			return @$"
 HasValue = true;
-
 {GenerateFieldInitializers(type)}
 
-if (jsonReader.TokenType == JsonTokenType.None) jsonReader.Read();
-if (jsonReader.TokenType != JsonTokenType.StartObject) throw new JsonException(""Expected '{{'"");
+if (jsonReader.TokenType != JsonTokenType.StartObject) jsonReader.Read();
+if (jsonReader.TokenType != JsonTokenType.StartObject) throw new JsonException($""Expected '{{{{', but got {{jsonReader.TokenType}}"");
+
+jsonReader.Read();
 
 while (jsonReader.TokenType != JsonTokenType.EndObject)
 {{
-	if (!jsonReader.Read()) throw new JsonException(""Expected '}}'"");
-	if (jsonReader.TokenType != JsonTokenType.PropertyName) throw new JsonException(""Expected property name"");
+	if (jsonReader.TokenType != JsonTokenType.PropertyName) throw new JsonException($""Expected property name or '}}}}', but got {{jsonReader.TokenType}}"");
 
 {CodeGenetaionHelper.Indent(1, GenerateFieldDeserializers(type))}
 	else
 	{{
 		jsonReader.Read();
-		jsonReader.Skip();
+
+		if (jsonReader.TokenType == JsonTokenType.StartObject || jsonReader.TokenType == JsonTokenType.StartArray)
+		{{
+			jsonReader.Skip();
+			jsonReader.Read();
+		}}
 	}}
 
 	jsonReader.Read();
@@ -100,7 +105,7 @@ if ({GenerateFieldNameCondition(field)})
 			{
 				case "System.Int32":
 				case "System.Double":
-					return $"jsonReader.{type.Split('.')[1]}()";
+					return $"jsonReader.Get{type.Split('.')[1]}()";
 				default:
 					return $"new {type}(jsonReader)";
 			}

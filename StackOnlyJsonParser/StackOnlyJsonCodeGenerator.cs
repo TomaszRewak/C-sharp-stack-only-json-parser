@@ -13,7 +13,7 @@ using System.Text;
 namespace StackOnlyJsonParser
 {
 	[Generator]
-	public class StackOnlyJsonParserGenerator : ISourceGenerator
+	public class StackOnlyJsonCodeGenerator : ISourceGenerator
 	{
 		public void Initialize(InitializationContext context)
 		{
@@ -27,7 +27,7 @@ namespace StackOnlyJsonParser
 
 			var attributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
 
-			Console.Error.WriteLine("Aaaas");
+			//Console.Error.WriteLine("Aaaa");
 
 			foreach (var classSyntax in syntaxReceiver.Structs)
 			{
@@ -39,12 +39,19 @@ namespace StackOnlyJsonParser
 
 				var typeName = typeSymbol.Name;
 				var typeNamespace = GetNamespace(typeSymbol);
+				var fields = typeSymbol.GetMembers().OfType<IFieldSymbol>();
+
+				var jsonFields = fields
+					.Select(field => new JsonField(
+						field.Name,
+						$"{GetNamespace(field.Type)}.{field.Type.Name}",
+						new[] { field.Name }));
 
 				var structure = new JsonType(
 					Accessibility.Public,
 					typeNamespace,
 					typeName,
-					new List<JsonField>());
+					jsonFields);
 
 				context.AddSource($"{typeName}.Generated.cs", SourceText.From(TypeGenerator.Generate(structure), Encoding.UTF8));
 			}

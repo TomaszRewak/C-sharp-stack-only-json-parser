@@ -10,12 +10,15 @@ namespace StackOnlyJsonParser.Example
 		{
 			var bytes = JsonSerializer.SerializeToUtf8Bytes(new {
 				Name = "Some name",
-				Price = 1.2
+				Price = 1.2,
+				Id1 = 1,
+				Id2 = 2
 			});
 
 			var product = new Product(bytes);
 
-			Console.WriteLine(product.Name);
+			Console.WriteLine(product.Id1);
+			Console.WriteLine(product.Id2);
 		}
 	}
 }

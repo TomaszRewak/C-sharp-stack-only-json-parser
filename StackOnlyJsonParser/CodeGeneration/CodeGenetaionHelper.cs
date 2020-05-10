@@ -11,7 +11,7 @@ namespace StackOnlyJsonParser.CodeGeneration
 	{
 		public static string JoinLines(IEnumerable<string> lines)
 		{
-			return string.Join('\n', lines);
+			return string.Join("\n", lines);
 		}
 
 		public static string JoinLines(string separator, IEnumerable<string> lines)
@@ -25,7 +25,7 @@ namespace StackOnlyJsonParser.CodeGeneration
 				.Split('\n')
 				.Select(line => IndentLine(tabs, line));
 
-			return string.Join('\n', lines);
+			return string.Join("\n", lines);
 		}
 
 		private static string IndentLine(int tabs, string line)
