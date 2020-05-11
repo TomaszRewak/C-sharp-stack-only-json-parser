@@ -20,7 +20,7 @@ namespace {array.Namespace}
 	{{
 		private readonly Utf8JsonReader _jsonReader;
 
-		public readonly bool HasValue;
+		public readonly bool HasValue {{ get; }}
 
 		public {array.TypeName}(ref Utf8JsonReader jsonReader)
 		{{
@@ -62,7 +62,7 @@ namespace {array.Namespace}
 
 			public bool MoveNext()
 			{{
-				if (_jsonReader.TokenType == JsonTokenType.EndArray) return false;
+				if (_jsonReader.TokenType == JsonTokenType.EndArray || _jsonReader.TokenType == JsonTokenType.None) return false;
 
 				Current = {DeserializationGenerator.Generate("_jsonReader", array.ElementType)};
 				_jsonReader.Read();

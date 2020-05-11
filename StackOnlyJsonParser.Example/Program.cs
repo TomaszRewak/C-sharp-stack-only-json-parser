@@ -27,6 +27,18 @@ namespace StackOnlyJsonParser.Example
 				AdditinalColors = new[] {
 					new { R = 1, G = 2, B = 3 },
 					new { R = 4, G = 5, B = 6 }
+				},
+				Prices = new {
+					PL = new
+					{
+						Currency = "PLN",
+						Value = 100
+					},
+					NL = new
+					{
+						Currency = "EUR",
+						Value = 25
+					}
 				}
 			});
 
@@ -38,6 +50,7 @@ namespace StackOnlyJsonParser.Example
 			Console.WriteLine(product.ShortName.ToString());
 			Console.WriteLine(product.MainColor.HasValue);
 			Console.WriteLine($"{product.MainColor.R} {product.MainColor.G} {product.MainColor.B}");
+			Console.WriteLine(product.MainColor.Brightness);
 			Console.WriteLine(product.PackageColor.HasValue);
 			Console.WriteLine(product.LogoColor.HasValue);
 			Console.WriteLine(product.Sizes.Any());
@@ -45,6 +58,8 @@ namespace StackOnlyJsonParser.Example
 				Console.WriteLine($"size {size}");
 			foreach (var color in product.AdditinalColors)
 				Console.WriteLine($"color {color.R}, {color.G}, {color.B}");
+			foreach (var price in product.Prices)
+				Console.WriteLine($"price {price.Key}: {price.Value.Value} {price.Value.Currency}");
 		}
 	}
 }

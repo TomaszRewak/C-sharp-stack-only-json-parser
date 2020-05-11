@@ -1,14 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Operations;
 using Microsoft.CodeAnalysis.Text;
 using StackOnlyJsonParser.CodeAnalysis;
 using StackOnlyJsonParser.CodeGeneration;
 using StackOnlyJsonParser.CodeStructure;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -29,8 +26,7 @@ namespace StackOnlyJsonParser
 
 			var typeAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
 			var arrayAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonArrayAttribute).FullName);
-
-			//Console.Error.WriteLine("Aaaa");
+			var dictionaryAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonDictionaryAttribute).FullName);
 
 			foreach (var classSyntax in syntaxReceiver.Structs)
 			{
@@ -42,6 +38,9 @@ namespace StackOnlyJsonParser
 
 				if (type.HasAttribute(arrayAttributeSymbol))
 					GenerateArray(context, type, type.GetAttribute(arrayAttributeSymbol));
+
+				if (type.HasAttribute(dictionaryAttributeSymbol))
+					GenerateDictionaty(context, type, type.GetAttribute(dictionaryAttributeSymbol));
 			}
 		}
 
@@ -49,7 +48,8 @@ namespace StackOnlyJsonParser
 		{
 			var jsonFields = type
 				.GetMembers()
-				.OfType<IFieldSymbol>()
+				.OfType<IPropertySymbol>()
+				.Where(SyntaxHelper.IsAutoProperty)
 				.Select(field => new JsonField(
 					field.Name,
 					field.Type.GetFullName(),
@@ -73,6 +73,18 @@ namespace StackOnlyJsonParser
 				((INamedTypeSymbol)attributeData.ConstructorArguments[0].Value).GetFullName());
 
 			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(ArrayGenerator.Generate(structure), Encoding.UTF8));
+		}
+
+		private void GenerateDictionaty(SourceGeneratorContext context, INamedTypeSymbol type, AttributeData attributeData)
+		{
+			var structure = new JsonDictionary(
+				"public",
+				type.GetNamespace(),
+				type.Name,
+				((INamedTypeSymbol)attributeData.ConstructorArguments[0].Value).GetFullName(),
+				((INamedTypeSymbol)attributeData.ConstructorArguments[1].Value).GetFullName());
+
+			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(DictionaryGenerator.Generate(structure), Encoding.UTF8));
 		}
 	}
 

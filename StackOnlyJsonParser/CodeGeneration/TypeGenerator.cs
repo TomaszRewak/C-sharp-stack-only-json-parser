@@ -20,7 +20,7 @@ namespace {type.Namespace}
 {{
 	{type.Accesibility} readonly ref partial struct {type.TypeName}
 	{{
-		public readonly bool HasValue;
+		public readonly bool HasValue {{ get; }}
 
 		public {type.TypeName}(ReadOnlySpan<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions {{ CommentHandling = JsonCommentHandling.Skip }}))
 		{{}}
