@@ -1,5 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
+using StackOnlyJsonParser.CodeAnalysis;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StackOnlyJsonParser.CodeStructure
 {
@@ -10,12 +12,17 @@ namespace StackOnlyJsonParser.CodeStructure
 		public string TypeName { get; }
 		public IReadOnlyCollection<JsonField> Fields { get; }
 
-		public JsonType(string accessibility, string @namespace, string typeName, IEnumerable<JsonField> fields)
+		public JsonType(INamedTypeSymbol type)
 		{
-			Accesibility = accessibility;
-			Namespace = @namespace;
-			TypeName = typeName;
-			Fields = new List<JsonField>(fields);
+			Accesibility = type.DeclaredAccessibility.ToString().ToLower();
+			Namespace = type.GetNamespace();
+			TypeName = type.Name;
+			Fields = type
+				.GetMembers()
+				.OfType<IPropertySymbol>()
+				.Where(SyntaxHelper.IsAutoProperty)
+				.Select(field => new JsonField(field))
+				.ToArray();
 		}
 	}
 }

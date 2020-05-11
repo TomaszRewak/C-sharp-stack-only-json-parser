@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using StackOnlyJsonParser.CodeAnalysis;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,12 +13,14 @@ namespace StackOnlyJsonParser.CodeStructure
 		public string TypeName { get; }
 		public string ElementType { get; }
 
-		public JsonArray(string accesibility, string @namespace, string typeName, string elementType)
+		public JsonArray(INamedTypeSymbol type)
 		{
-			Accesibility = accesibility;
-			Namespace = @namespace;
-			TypeName = typeName;
-			ElementType = elementType;
+			var attributeData = type.GetAttribute(typeof(StackOnlyJsonArrayAttribute).FullName);
+
+			Accesibility = type.DeclaredAccessibility.ToString().ToLower();
+			Namespace = type.GetNamespace();
+			TypeName = type.Name;
+			ElementType = ((INamedTypeSymbol)attributeData.ConstructorArguments[0].Value).GetFullName();
 		}
 	}
 }

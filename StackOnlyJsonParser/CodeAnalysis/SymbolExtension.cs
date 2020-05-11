@@ -7,24 +7,24 @@ namespace StackOnlyJsonParser.CodeAnalysis
 {
 	internal static class SymbolExtension
 	{
-		public static IEnumerable<AttributeData> GetAttributes(this ITypeSymbol type, INamedTypeSymbol attributeType)
+		public static IEnumerable<AttributeData> GetAttributes(this ITypeSymbol type, string typeName)
 		{
 			return type
 				.GetAttributes()
-				.Where(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeType));
+				.Where(a => a.AttributeClass.GetFullName() == typeName);
 		}
 
-		public static bool HasAttribute(this ITypeSymbol type, INamedTypeSymbol attributeType)
+		public static bool HasAttribute(this ITypeSymbol type, string typeName)
 		{
 			return type
-				.GetAttributes(attributeType)
+				.GetAttributes(typeName)
 				.Any();
 		}
 
-		public static AttributeData GetAttribute(this ITypeSymbol type, INamedTypeSymbol attributeType)
+		public static AttributeData GetAttribute(this ITypeSymbol type, string typeName)
 		{
 			return type
-				.GetAttributes(attributeType)
+				.GetAttributes(typeName)
 				.First();
 		}
 

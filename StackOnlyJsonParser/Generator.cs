@@ -24,67 +24,44 @@ namespace StackOnlyJsonParser
 			var syntaxReceiver = (MySyntaxReceiver)context.SyntaxReceiver;
 			var compilation = context.Compilation;
 
-			var typeAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonTypeAttribute).FullName);
-			var arrayAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonArrayAttribute).FullName);
-			var dictionaryAttributeSymbol = compilation.GetTypeByMetadataName(typeof(StackOnlyJsonDictionaryAttribute).FullName);
-
 			foreach (var classSyntax in syntaxReceiver.Structs)
 			{
 				var semanticModel = compilation.GetSemanticModel(classSyntax.SyntaxTree);
 				var type = semanticModel.GetDeclaredSymbol(classSyntax);
 
-				if (type.HasAttribute(typeAttributeSymbol))
+				if (type.HasAttribute(typeof(StackOnlyJsonTypeAttribute).FullName))
 					GenerateType(context, type);
 
-				if (type.HasAttribute(arrayAttributeSymbol))
-					GenerateArray(context, type, type.GetAttribute(arrayAttributeSymbol));
+				if (type.HasAttribute(typeof(StackOnlyJsonArrayAttribute).FullName))
+					GenerateArray(context, type);
 
-				if (type.HasAttribute(dictionaryAttributeSymbol))
-					GenerateDictionaty(context, type, type.GetAttribute(dictionaryAttributeSymbol));
+				if (type.HasAttribute(typeof(StackOnlyJsonDictionaryAttribute).FullName))
+					GenerateDictionaty(context, type);
 			}
 		}
 
 		private void GenerateType(SourceGeneratorContext context, INamedTypeSymbol type)
 		{
-			var jsonFields = type
-				.GetMembers()
-				.OfType<IPropertySymbol>()
-				.Where(SyntaxHelper.IsAutoProperty)
-				.Select(field => new JsonField(
-					field.Name,
-					field.Type.GetFullName(),
-					new[] { field.Name }));
+			var structure = new JsonType(type);
+			var code = TypeGenerator.Generate(structure);
 
-			var structure = new JsonType(
-				"public",
-				type.GetNamespace(),
-				type.Name,
-				jsonFields);
-
-			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(TypeGenerator.Generate(structure), Encoding.UTF8));
+			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(code, Encoding.UTF8));
 		}
 
-		private void GenerateArray(SourceGeneratorContext context, INamedTypeSymbol type, AttributeData attributeData)
+		private void GenerateArray(SourceGeneratorContext context, INamedTypeSymbol type)
 		{
-			var structure = new JsonArray(
-				"public",
-				type.GetNamespace(),
-				type.Name,
-				((INamedTypeSymbol)attributeData.ConstructorArguments[0].Value).GetFullName());
+			var structure = new JsonArray(type);
+			var code = ArrayGenerator.Generate(structure);
 
-			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(ArrayGenerator.Generate(structure), Encoding.UTF8));
+			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(code, Encoding.UTF8));
 		}
 
-		private void GenerateDictionaty(SourceGeneratorContext context, INamedTypeSymbol type, AttributeData attributeData)
+		private void GenerateDictionaty(SourceGeneratorContext context, INamedTypeSymbol type)
 		{
-			var structure = new JsonDictionary(
-				"public",
-				type.GetNamespace(),
-				type.Name,
-				((INamedTypeSymbol)attributeData.ConstructorArguments[0].Value).GetFullName(),
-				((INamedTypeSymbol)attributeData.ConstructorArguments[1].Value).GetFullName());
+			var structure = new JsonDictionary(type);
+			var code = DictionaryGenerator.Generate(structure);
 
-			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(DictionaryGenerator.Generate(structure), Encoding.UTF8));
+			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(code, Encoding.UTF8));
 		}
 	}
 

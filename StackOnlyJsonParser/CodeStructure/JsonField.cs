@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.CodeAnalysis;
+using StackOnlyJsonParser.CodeAnalysis;
+using System.Collections.Generic;
 
 namespace StackOnlyJsonParser.CodeStructure
 {
@@ -8,11 +10,11 @@ namespace StackOnlyJsonParser.CodeStructure
 		public string Type { get; }
 		public IReadOnlyCollection<string> SerializedNames { get; }
 
-		public JsonField(string name, string type, IEnumerable<string> serializedNames)
+		public JsonField(IPropertySymbol property)
 		{
-			Name = name;
-			Type = type;
-			SerializedNames = new List<string>(serializedNames);
+			Name = property.Name;
+			Type = property.Type.GetFullName();
+			SerializedNames = new[] { property.Name };
 		}
 	}
 }
