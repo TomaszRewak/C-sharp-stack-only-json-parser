@@ -22,6 +22,12 @@ namespace {dictionary.Namespace}
 
 		public readonly bool HasValue {{ get; }}
 
+		public {dictionary.TypeName}(ReadOnlySpan<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions {{ CommentHandling = JsonCommentHandling.Skip }}))
+		{{}}
+		public {dictionary.TypeName}(ReadOnlySequence<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions {{ CommentHandling = JsonCommentHandling.Skip }}))
+		{{}}
+		private {dictionary.TypeName}(Utf8JsonReader jsonReader) : this(ref jsonReader)
+		{{}}
 		public {dictionary.TypeName}(ref Utf8JsonReader jsonReader)
 		{{
 			if (jsonReader.TokenType != JsonTokenType.StartObject && jsonReader.TokenType != JsonTokenType.Null) jsonReader.Read();

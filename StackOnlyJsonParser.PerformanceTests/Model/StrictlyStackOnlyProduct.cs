@@ -35,4 +35,8 @@ namespace StackOnlyJsonParser.PerformanceTests.Model
 	[StackOnlyJsonDictionary(typeof(StackOnlyJsonString), typeof(StackOnlyPrice))]
 	internal readonly ref partial struct StackOnlyRegions
 	{ }
+
+	[StackOnlyJsonArray(typeof(StackOnlyProduct))]
+	internal readonly ref partial struct StackOnlyProducts
+	{ }
 }
