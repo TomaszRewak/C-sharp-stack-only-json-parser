@@ -39,6 +39,19 @@ namespace StackOnlyJsonParser.Example
 						Currency = "EUR",
 						val = 25
 					}
+				},
+				StackPrices = new
+				{
+					US = new
+					{
+						Currency = "DOL",
+						value = 100
+					},
+					NL = new
+					{
+						Currency = "EUR",
+						val = 25
+					}
 				}
 			});
 
@@ -60,6 +73,8 @@ namespace StackOnlyJsonParser.Example
 				Console.WriteLine($"color {color.R}, {color.G}, {color.B}");
 			foreach (var price in product.Prices)
 				Console.WriteLine($"price {price.Key}: {price.Value.Value} {price.Value.Currency}");
+			foreach (var price in product.StackPrices)
+				Console.WriteLine($"price {price.Key.ToString()}: {price.Value.Value} {price.Value.Currency}");
 		}
 	}
 }

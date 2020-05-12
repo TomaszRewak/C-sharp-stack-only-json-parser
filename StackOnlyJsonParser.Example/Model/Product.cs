@@ -23,5 +23,6 @@ namespace StackOnlyJsonParser.Example.Model
 		public readonly Color LogoColor { get; }
 		public readonly ColorArray AdditinalColors { get; }
 		public readonly PriceDictionary Prices { get; }
+		public readonly StackPriceDictionary StackPrices { get; }
 	}
 }

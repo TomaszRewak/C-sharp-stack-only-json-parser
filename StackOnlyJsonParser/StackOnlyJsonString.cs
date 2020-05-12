@@ -24,8 +24,8 @@ namespace StackOnlyJsonParser
 
 		public StackOnlyJsonString(ref Utf8JsonReader jsonReader)
 		{
-			if (jsonReader.TokenType != JsonTokenType.String && jsonReader.TokenType != JsonTokenType.Null) jsonReader.Read();
-			if (jsonReader.TokenType != JsonTokenType.String && jsonReader.TokenType != JsonTokenType.Null) throw new JsonException($"Expected string, but got { jsonReader.TokenType }");
+			if (jsonReader.TokenType != JsonTokenType.PropertyName && jsonReader.TokenType != JsonTokenType.String && jsonReader.TokenType != JsonTokenType.Null) jsonReader.Read();
+			if (jsonReader.TokenType != JsonTokenType.PropertyName && jsonReader.TokenType != JsonTokenType.String && jsonReader.TokenType != JsonTokenType.Null) throw new JsonException($"Expected string, but got { jsonReader.TokenType }");
 
 			HasValue = jsonReader.TokenType != JsonTokenType.Null;
 			_jsonReader = jsonReader;

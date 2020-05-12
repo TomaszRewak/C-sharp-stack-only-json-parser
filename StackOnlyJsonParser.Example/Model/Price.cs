@@ -18,4 +18,8 @@ namespace StackOnlyJsonParser.Example.Model
 	[StackOnlyJsonDictionary(typeof(string), typeof(Price))]
 	public readonly ref partial struct PriceDictionary
 	{ }
+
+	[StackOnlyJsonDictionary(typeof(StackOnlyJsonString), typeof(Price))]
+	public readonly ref partial struct StackPriceDictionary
+	{ }
 }
