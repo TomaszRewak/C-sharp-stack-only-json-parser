@@ -32,12 +32,12 @@ namespace StackOnlyJsonParser.Example
 					PL = new
 					{
 						Currency = "PLN",
-						Value = 100
+						value = 100
 					},
 					NL = new
 					{
 						Currency = "EUR",
-						Value = 25
+						val = 25
 					}
 				}
 			});

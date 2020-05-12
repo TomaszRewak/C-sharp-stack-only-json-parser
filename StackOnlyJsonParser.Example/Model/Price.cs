@@ -10,6 +10,8 @@ namespace StackOnlyJsonParser.Example.Model
 	public readonly ref partial struct Price
 	{
 		public string Currency { get; }
+
+		[StackOnlyJsonField("value", "val")]
 		public double Value { get; }
 	}
 
