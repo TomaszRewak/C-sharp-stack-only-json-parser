@@ -11,7 +11,7 @@ namespace StackOnlyJsonParser.CodeStructure
 		public string Accesibility { get; set; }
 		public string Namespace { get; }
 		public string TypeName { get; }
-		public string ElementType { get; }
+		public JsonDataType ElementType { get; }
 
 		public JsonArray(INamedTypeSymbol type)
 		{
@@ -20,7 +20,7 @@ namespace StackOnlyJsonParser.CodeStructure
 			Accesibility = type.DeclaredAccessibility.ToString().ToLower();
 			Namespace = type.GetNamespace();
 			TypeName = type.Name;
-			ElementType = ((INamedTypeSymbol)attributeData.ConstructorArguments[0].Value).GetFullName();
+			ElementType = new JsonDataType((INamedTypeSymbol)attributeData.ConstructorArguments[0].Value);
 		}
 	}
 }

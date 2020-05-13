@@ -11,8 +11,8 @@ namespace StackOnlyJsonParser.CodeStructure
 		public string Accesibility { get; set; }
 		public string Namespace { get; }
 		public string TypeName { get; }
-		public string KeyType { get; }
-		public string ValueType { get; }
+		public JsonDataType KeyType { get; }
+		public JsonDataType ValueType { get; }
 
 		public JsonDictionary(INamedTypeSymbol type)
 		{
@@ -21,8 +21,8 @@ namespace StackOnlyJsonParser.CodeStructure
 			Accesibility = type.DeclaredAccessibility.ToString().ToLower();
 			Namespace = type.GetNamespace();
 			TypeName = type.Name;
-			KeyType = ((INamedTypeSymbol)attributeData.ConstructorArguments[0].Value).GetFullName();
-			ValueType = ((INamedTypeSymbol)attributeData.ConstructorArguments[1].Value).GetFullName();
+			KeyType = new JsonDataType((INamedTypeSymbol)attributeData.ConstructorArguments[0].Value);
+			ValueType = new JsonDataType((INamedTypeSymbol)attributeData.ConstructorArguments[1].Value);
 		}
 	}
 }

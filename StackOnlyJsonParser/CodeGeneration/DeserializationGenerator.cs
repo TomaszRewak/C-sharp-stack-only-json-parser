@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StackOnlyJsonParser.CodeStructure;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +7,14 @@ namespace StackOnlyJsonParser.CodeGeneration
 {
 	internal static class DeserializationGenerator
 	{
-		public static string Generate(string readerName, string type)
+		public static string Generate(string readerName, JsonDataType type)
+		{
+			return type.Nullable
+				? $"{readerName}.TokenType == JsonTokenType.Null ? ({type.FullName}?) null : {Generate(readerName, type.FullName)}"
+				: Generate(readerName, type.FullName);
+		}
+
+		private static string Generate(string readerName, string type)
 		{
 			switch (type)
 			{

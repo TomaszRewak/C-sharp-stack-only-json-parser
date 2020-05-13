@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30028.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackOnlyJsonParser", "StackOnlyJsonParser\StackOnlyJsonParser.csproj", "{672FB090-83F5-4BD8-9070-F7F3255E3751}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackOnlyJsonParser.Example", "StackOnlyJsonParser.Example\StackOnlyJsonParser.Example.csproj", "{2F9D22E6-EC86-447B-8376-8FC7684EC46E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackOnlyJsonParser.PerformanceTests", "StackOnlyJsonParser.PerformanceTests\StackOnlyJsonParser.PerformanceTests.csproj", "{66F99C16-F40B-4301-989A-D7F2CF47A7EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackOnlyJsonParser.PerformanceTests", "StackOnlyJsonParser.PerformanceTests\StackOnlyJsonParser.PerformanceTests.csproj", "{66F99C16-F40B-4301-989A-D7F2CF47A7EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackOnlyJsonParser.UnitTests", "StackOnlyJsonParser.UnitTests\StackOnlyJsonParser.UnitTests.csproj", "{5B48DE02-FCB6-49CF-BC36-5C65F48CAA52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{672FB090-83F5-4BD8-9070-F7F3255E3751}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{672FB090-83F5-4BD8-9070-F7F3255E3751}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{672FB090-83F5-4BD8-9070-F7F3255E3751}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F9D22E6-EC86-447B-8376-8FC7684EC46E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F9D22E6-EC86-447B-8376-8FC7684EC46E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F9D22E6-EC86-447B-8376-8FC7684EC46E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F9D22E6-EC86-447B-8376-8FC7684EC46E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{66F99C16-F40B-4301-989A-D7F2CF47A7EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{66F99C16-F40B-4301-989A-D7F2CF47A7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66F99C16-F40B-4301-989A-D7F2CF47A7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66F99C16-F40B-4301-989A-D7F2CF47A7EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B48DE02-FCB6-49CF-BC36-5C65F48CAA52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B48DE02-FCB6-49CF-BC36-5C65F48CAA52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B48DE02-FCB6-49CF-BC36-5C65F48CAA52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B48DE02-FCB6-49CF-BC36-5C65F48CAA52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
