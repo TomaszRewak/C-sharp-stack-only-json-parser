@@ -389,5 +389,15 @@ namespace StackOnlyJsonParser.UnitTests
 			Assert.IsTrue(enumerator.Current.Key.ValueTextEquals("B"));
 			Assert.IsFalse(enumerator.MoveNext());
 		}
+
+		[TestMethod]
+		public void GetOnlyPropertiesAreNotDeserialized()
+		{
+			var data = Encode(@"{ ""Int"": 3, ""Double"": 10, ""Multiplied"": 2 }");
+
+			var model = new StackOnlyType(data);
+
+			Assert.AreEqual(30, model.Multiplied);
+		}
 	}
 }

@@ -12,6 +12,7 @@ namespace StackOnlyJsonParser.UnitTests
 		public double Double { get; }
 		public int Int { get; }
 		public string String { get; }
+		public double Multiplied => Double * Int;
 	}
 
 	[StackOnlyJsonType]
