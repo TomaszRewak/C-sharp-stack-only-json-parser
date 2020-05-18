@@ -181,6 +181,79 @@ The deserialization of simple and custom message types is rather straightforward
 
 The real clue of the idea behind this library comes in a form of collections. Whenever one of them is encountered, the deserialization code skips the entire block, only remembering its bounds. The consecutive elements will be deserialized ad-hoc within the `foreach` loop when requested. Thanks to this only one element of the collection is alive at one time and the entire process can be performed entirely on the stack with no heap allocations. That can be especially important in case of big collections, which if allocated, could travel across GC generations.
 
+An example of a generated array deserializer:
+
+```csharp
+using System;
+using System.Buffers;
+using System.Text.Json;
+
+namespace StackOnlyJsonParser.Example
+{
+	internal readonly ref partial struct ProductArray
+	{
+		private readonly Utf8JsonReader _jsonReader;
+
+		public readonly bool HasValue { get; }
+
+		public ProductArray(ReadOnlySpan<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip }))
+		{}
+		public ProductArray(ReadOnlySequence<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip }))
+		{}
+		private ProductArray(Utf8JsonReader jsonReader) : this(ref jsonReader)
+		{}
+		public ProductArray(ref Utf8JsonReader jsonReader)
+		{
+			if (jsonReader.TokenType != JsonTokenType.StartArray && jsonReader.TokenType != JsonTokenType.Null) jsonReader.Read();
+
+			switch (jsonReader.TokenType)
+			{
+				case JsonTokenType.StartArray:
+					HasValue = true;
+					_jsonReader = jsonReader;
+					_jsonReader.Read();
+					jsonReader.Skip();
+					break;
+
+				case JsonTokenType.Null:
+					HasValue = false;
+					_jsonReader = default;
+					break;
+
+				default:
+					throw new JsonException($""Expected '[', but got {jsonReader.TokenType}"");
+			}
+		}
+
+		public bool Any() => HasValue && _jsonReader.TokenType != JsonTokenType.EndArray;
+		public Enumerator GetEnumerator() => new Enumerator(_jsonReader);
+
+		public ref struct Enumerator
+		{
+			private Utf8JsonReader _jsonReader;
+
+			public Enumerator(in Utf8JsonReader jsonReader)
+			{
+				_jsonReader = jsonReader;
+				Current = default;
+			}
+
+			public Product Current { get; private set; }
+
+			public bool MoveNext()
+			{
+				if (_jsonReader.TokenType == JsonTokenType.EndArray || _jsonReader.TokenType == JsonTokenType.None) return false;
+
+				Current = new Product(_jsonReader);
+				_jsonReader.Read();
+
+				return true;
+			}
+		}
+	}
+}
+```
+
 ## Performance
 
 Below you can find the results of the performance tests defined in the [StackOnlyJsonParser.PerformanceTests](https://github.com/TomaszRewak/C-sharp-stack-only-json-parser/tree/master/StackOnlyJsonParser.PerformanceTests) project.
