@@ -15,9 +15,11 @@ namespace StackOnlyJsonParser.CodeGeneration
 using System;
 using System.Buffers;
 using System.Text.Json;
+using System.Runtime.InteropServices;
 
 namespace {type.Namespace}
 {{
+	[StructLayout(LayoutKind.Auto)]
 	{type.Accesibility} readonly ref partial struct {type.TypeName}
 	{{
 		public readonly bool HasValue {{ get; }}

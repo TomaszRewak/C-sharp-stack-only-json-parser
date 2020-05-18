@@ -11,10 +11,11 @@
 		<RepositoryUrl>https://github.com/TomaszRewak/C-sharp-stack-only-json-parser</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>json, parser, span, utf8</PackageTags>
-		<PackageReleaseNotes>1.0.1 - Fixing nuge analyzers
+		<PackageReleaseNotes>1.0.2 - Fixing the parial struct ordering warnings
+1.0.1 - Fixing nuge analyzers
 1.0.0 - Initial release</PackageReleaseNotes>
 		<Description>Stack only json deserialization using generators and System.Text.Json library</Description>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>Tomasz Rewak</Copyright>
 	</PropertyGroup>
