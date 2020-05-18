@@ -171,7 +171,7 @@ var sizes = new Sizes(data);
 
 #### StackOnlyJsonString
 
-If limiting the number of allocations is of the upmost importance to you, instead of using the `System.String` type when defining your models, you can use the `StackOnlyJsonParser.StackOnlyJsonString` type instead. It's a non-allocating wrapper over the `Utf8JsonReader` that allows you to easily compare the stored string data with a provided value.
+If limiting the number of allocations is of the utmost importance to you, instead of using the `System.String` type when defining your models, you can use the `StackOnlyJsonParser.StackOnlyJsonString` type instead. It's a non-allocating wrapper over the `Utf8JsonReader` that allows you to easily compare the stored string data with a provided value.
 
 Considering that string values in your deserialized data will most likely be very short lived objects, and that creation of the StackOnlyJsonString requires making a copy of the `Utf8JsonReader` (which is a relatively big struct), using the `StackOnlyJsonString` can have a negative performance impact as compared to the standard `string`. Nevertheless, it can help you achieve a truly zero-allocation memory profile.
 
