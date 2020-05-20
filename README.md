@@ -175,6 +175,37 @@ If limiting the number of allocations is of the utmost importance to you, instea
 
 Considering that string values in your deserialized data will most likely be very short lived objects, and that creation of the StackOnlyJsonString requires making a copy of the `Utf8JsonReader` (which is a relatively big struct), using the `StackOnlyJsonString` can have a negative performance impact as compared to the standard `string`. Nevertheless, it can help you achieve a truly zero-allocation memory profile.
 
+#### Recursive models
+
+By definition `struct`s cannot have cycles in their layouts as that would lead to them having an infinite size. Nevertheless, the StackOnlyJsonParser allows for defining recursive models by the use of lazy loading. It works similarly to the collections - you might think of lazy loaders as collections with only one element. To define a lazy loader use the `[StackOnlyJsonLazyLoader]` attribute:
+
+```
+[StackOnlyJsonType]
+internal readonly ref partial struct RecursiveType
+{
+	public int Id { get; }
+	public RecursiveTypeLazyLoader Internal { get; }
+}
+
+[StackOnlyJsonLazyLoader(typeof(RecursiveType))]
+internal readonly ref partial struct RecursiveTypeLazyLoader
+{ }
+```
+
+Now you can deserialize the data in the following way:
+
+```
+internal void Process(RecursiveType model)
+{
+	Console.WriteLine(model.Id);
+
+	if (model.Internal.HasValue)
+		Process(model.Internal.Load());
+}
+```
+
+The `Load` method creates and deserializes the new object ad hoc based on the previously cached position of the json tokenizer.
+
 ## How does it work?
 
 The deserialization of simple and custom message types is rather straightforward. The generated constructors use the provided `Utf8JsonReader` as a token provider for field deserialization.
