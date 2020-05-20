@@ -171,7 +171,7 @@ var sizes = new Sizes(data);
 
 #### StackOnlyJsonString
 
-If limiting the number of allocations is of the upmost importance to you, instead of using the `System.String` type when defining your models, you can use the `StackOnlyJsonParser.StackOnlyJsonString` type instead. It's a non-allocating wrapper over the `Utf8JsonReader` that allows you to easily compare the stored string data with a provided value.
+If limiting the number of allocations is of the utmost importance to you, instead of using the `System.String` type when defining your models, you can use the `StackOnlyJsonParser.StackOnlyJsonString` type instead. It's a non-allocating wrapper over the `Utf8JsonReader` that allows you to easily compare the stored string data with a provided value.
 
 Considering that string values in your deserialized data will most likely be very short lived objects, and that creation of the StackOnlyJsonString requires making a copy of the `Utf8JsonReader` (which is a relatively big struct), using the `StackOnlyJsonString` can have a negative performance impact as compared to the standard `string`. Nevertheless, it can help you achieve a truly zero-allocation memory profile.
 
@@ -181,6 +181,127 @@ The deserialization of simple and custom message types is rather straightforward
 
 The real clue of the idea behind this library comes in a form of collections. Whenever one of them is encountered, the deserialization code skips the entire block, only remembering its bounds. The consecutive elements will be deserialized ad-hoc within the `foreach` loop when requested. Thanks to this only one element of the collection is alive at one time and the entire process can be performed entirely on the stack with no heap allocations. That can be especially important in case of big collections, which if allocated, could travel across GC generations.
 
+An example of a generated array deserializer:
+
+```csharp
+using System;
+using System.Buffers;
+using System.Text.Json;
+
+namespace StackOnlyJsonParser.Example
+{
+	internal readonly ref partial struct ProductArray
+	{
+		private readonly Utf8JsonReader _jsonReader;
+
+		public readonly bool HasValue { get; }
+
+		public ProductArray(ReadOnlySpan<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip }))
+		{}
+		public ProductArray(ReadOnlySequence<byte> jsonData) : this(new Utf8JsonReader(jsonData, new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip }))
+		{}
+		private ProductArray(Utf8JsonReader jsonReader) : this(ref jsonReader)
+		{}
+		public ProductArray(ref Utf8JsonReader jsonReader)
+		{
+			if (jsonReader.TokenType != JsonTokenType.StartArray && jsonReader.TokenType != JsonTokenType.Null) jsonReader.Read();
+
+			switch (jsonReader.TokenType)
+			{
+				case JsonTokenType.StartArray:
+					HasValue = true;
+					_jsonReader = jsonReader;
+					_jsonReader.Read();
+					jsonReader.Skip();
+					break;
+
+				case JsonTokenType.Null:
+					HasValue = false;
+					_jsonReader = default;
+					break;
+
+				default:
+					throw new JsonException($""Expected '[', but got {jsonReader.TokenType}"");
+			}
+		}
+
+		public bool Any() => HasValue && _jsonReader.TokenType != JsonTokenType.EndArray;
+		public Enumerator GetEnumerator() => new Enumerator(_jsonReader);
+
+		public ref struct Enumerator
+		{
+			private Utf8JsonReader _jsonReader;
+
+			public Enumerator(in Utf8JsonReader jsonReader)
+			{
+				_jsonReader = jsonReader;
+				Current = default;
+			}
+
+			public Product Current { get; private set; }
+
+			public bool MoveNext()
+			{
+				if (_jsonReader.TokenType == JsonTokenType.EndArray || _jsonReader.TokenType == JsonTokenType.None) return false;
+
+				Current = new Product(_jsonReader);
+				_jsonReader.Read();
+
+				return true;
+			}
+		}
+	}
+}
+```
+
+## Performance
+
+Below you can find the results of the performance tests defined in the [StackOnlyJsonParser.PerformanceTests](https://github.com/TomaszRewak/C-sharp-stack-only-json-parser/tree/master/StackOnlyJsonParser.PerformanceTests) project.
+
+In short, each framework was given a serialized json data containing a list of objects with the following definition:
+
+```csharp
+internal class Product
+{
+	public string Name { get; set; }
+	public DateTime ProductionDate { get; set; }
+	public Size BoxSize { get; set; }
+	public int AvailableItems { get; set; }
+	public List<string> Colors { get; set; }
+	public Dictionary<string, Price> Regions { get; set; }
+}
+
+internal class Size
+{
+	public double Width { get; set; }
+	public double Height { get; set; }
+	public double Depth { get; set; }
+}
+
+internal class Price
+{
+	public string Currency { get; set; }
+	public decimal Value { get; set; }
+}
+```
+
+In case of the StackOnlyJsonParser and the System.Text.Json library, the data was encoded as a UTF8 byte array. The Newtonsoft parser was provided with a string representation.
+
+As the StackOnlyJsonParser loads the data ad hoc, the test included a simple data aggregation task that was performed on data generated by each library.
+
+The StackOnlyJsonParser was profiled with both the standard `string` type, as well as the `StackOnlyJsonString` type as the underlying text representation.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/TomaszRewak/C-sharp-stack-only-json-parser/master/About/Data%20processing%20time.png" width=800/>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/TomaszRewak/C-sharp-stack-only-json-parser/master/About/Total%20memory%20allocations.png" width=800/>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/TomaszRewak/C-sharp-stack-only-json-parser/master/About/Memory%20in%20use.png" width=800/>
+</p>
 
 
 
