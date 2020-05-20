@@ -37,6 +37,9 @@ namespace StackOnlyJsonParser
 
 				if (type.HasAttribute(typeof(StackOnlyJsonDictionaryAttribute).FullName))
 					GenerateDictionaty(context, type);
+
+				if (type.HasAttribute(typeof(StackOnlyJsonLazyLoaderAttribute).FullName))
+					GenerateLazyLoader(context, type);
 			}
 		}
 
@@ -60,6 +63,14 @@ namespace StackOnlyJsonParser
 		{
 			var structure = new JsonDictionary(type);
 			var code = DictionaryGenerator.Generate(structure);
+
+			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(code, Encoding.UTF8));
+		}
+
+		private void GenerateLazyLoader(SourceGeneratorContext context, INamedTypeSymbol type)
+		{
+			var structure = new JsonLazyLoader(type);
+			var code = LazyLoaderGenerator.Generate(structure);
 
 			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(code, Encoding.UTF8));
 		}

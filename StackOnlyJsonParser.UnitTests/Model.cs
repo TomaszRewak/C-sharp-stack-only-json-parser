@@ -67,4 +67,15 @@ namespace StackOnlyJsonParser.UnitTests
 	[StackOnlyJsonDictionary(typeof(StackOnlyJsonString), typeof(int))]
 	internal readonly ref partial struct StrictlyStackOnlyDictionary
 	{ }
+
+	[StackOnlyJsonType]
+	internal readonly ref partial struct RecursiveStackOnlyType
+	{
+		public int Id { get; }
+		public RecursiveStackOnlyLazyLoader Internal { get; }
+	}
+
+	[StackOnlyJsonLazyLoader(typeof(RecursiveStackOnlyType))]
+	internal readonly ref partial struct RecursiveStackOnlyLazyLoader
+	{ }
 }

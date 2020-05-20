@@ -399,5 +399,19 @@ namespace StackOnlyJsonParser.UnitTests
 
 			Assert.AreEqual(30, model.Multiplied);
 		}
+
+		[TestMethod]
+		public void LazyLoadingAllowsForRecursiveStructures()
+		{
+			var data = Encode(@"{ ""Id"": 1, ""Internal"": { ""Internal"": { ""Id"": 3 }, ""Id"": 2 } }");
+
+			var model = new RecursiveStackOnlyType(data);
+
+			Assert.IsTrue(model.Internal.HasValue);
+			Assert.AreEqual(1, model.Id);
+			Assert.AreEqual(2, model.Internal.Load().Id);
+			Assert.AreEqual(3, model.Internal.Load().Internal.Load().Id);
+			Assert.IsFalse(model.Internal.Load().Internal.Load().Internal.HasValue);
+		}
 	}
 }
