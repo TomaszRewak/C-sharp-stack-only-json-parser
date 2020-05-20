@@ -179,7 +179,7 @@ Considering that string values in your deserialized data will most likely be ver
 
 By definition `struct`s cannot have cycles in their layouts as that would lead to them having an infinite size. Nevertheless, the StackOnlyJsonParser allows for defining recursive models by the use of lazy loading. It works similarly to the collections - you might think of lazy loaders as collections with only one element. To define a lazy loader use the `[StackOnlyJsonLazyLoader]` attribute:
 
-```
+```csharp
 [StackOnlyJsonType]
 internal readonly ref partial struct RecursiveType
 {
@@ -194,7 +194,7 @@ internal readonly ref partial struct RecursiveTypeLazyLoader
 
 Now you can deserialize the data in the following way:
 
-```
+```csharp
 internal void Process(RecursiveType model)
 {
 	Console.WriteLine(model.Id);
