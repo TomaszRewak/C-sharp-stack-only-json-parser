@@ -204,6 +204,12 @@ internal void Process(RecursiveType model)
 }
 ```
 
+```csharp
+var data = Encode(@"{ ""Id"": 1, ""Internal"": { ""Internal"": { ""Id"": 3 }, ""Id"": 2 } }");
+
+Process(new RecursiveType(data));
+```
+
 The `Load` method creates and deserializes the new object ad hoc based on the previously cached position of the json tokenizer.
 
 ## How does it work?
