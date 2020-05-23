@@ -23,9 +23,9 @@ namespace StackOnlyJsonParser.PerformanceTests
 					Name = NextName(),
 					BoxSize = new
 					{
-						Width = _random.NextDouble() * 100,
-						Height = _random.NextDouble() * 100,
-						Depth = _random.NextDouble() * 100,
+						Width = _random.Next(10000) * 0.01,
+						Height = _random.Next(10000) * 0.01,
+						Depth = _random.Next(10000) * 0.01,
 					},
 					AvailableItems = _random.Next(0, 10),
 					Colors = Colors.Where(_ => _random.Next(2) > 0),

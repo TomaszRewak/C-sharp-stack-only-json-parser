@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StackOnlyJsonParser.PerformanceTests.Model
 {
-	internal class HeapProduct
+	public class HeapProduct
 	{
 		public string Name { get; set; }
 		public DateTime ProductionDate { get; set; }
@@ -13,14 +13,14 @@ namespace StackOnlyJsonParser.PerformanceTests.Model
 		public Dictionary<string, HeapPrice> Regions { get; set; }
 	}
 
-	internal class HeapSize
+	public class HeapSize
 	{
 		public double Width { get; set; }
 		public double Height { get; set; }
 		public double Depth { get; set; }
 	}
 
-	internal class HeapPrice
+	public class HeapPrice
 	{
 		public string Currency { get; set; }
 		public decimal Value { get; set; }

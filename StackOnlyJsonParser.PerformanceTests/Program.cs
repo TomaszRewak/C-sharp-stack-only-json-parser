@@ -19,7 +19,7 @@ namespace StackOnlyJsonParser.PerformanceTests
 			var data = dataGenerator.Generate(int.Parse(args[1]));
 			var stringData = Encoding.UTF8.GetString(data);
 
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 21; i++)
 			{
 				GC.Collect();
 				var allocatedBytes = GC.GetAllocatedBytesForCurrentThread();
@@ -35,6 +35,9 @@ namespace StackOnlyJsonParser.PerformanceTests
 					case "System.Text.Json":
 						TestHeap2(data);
 						break;
+					case "Utf8Json":
+						TestHeap3(data);
+						break;
 					case "Stack":
 						TestStack(data);
 						break;
@@ -46,7 +49,8 @@ namespace StackOnlyJsonParser.PerformanceTests
 				allocatedBytes = GC.GetAllocatedBytesForCurrentThread() - allocatedBytes;
 				usedBytes = GC.GetTotalMemory(false) - usedBytes;
 
-				Console.WriteLine($"{price}\t{args[0]}\t{args[1]}\t{stopwatch.ElapsedMilliseconds}\t{allocatedBytes}\t{usedBytes}");
+				if (i > 0)
+					Console.WriteLine($"{price}\t{args[0]}\t{args[1]}\t{stopwatch.ElapsedMilliseconds}\t{allocatedBytes}\t{usedBytes}");
 			}
 		}
 
@@ -69,6 +73,21 @@ namespace StackOnlyJsonParser.PerformanceTests
 		{
 			stopwatch.Restart();
 			var products = JsonSerializer.Deserialize<List<HeapProduct>>(data);
+
+			foreach (var product in products)
+				foreach (var color in product.Colors)
+					if (color == "red")
+						foreach (var region in product.Regions)
+							if (region.Key == "PL")
+								price += product.AvailableItems * region.Value.Value;
+
+			stopwatch.Stop();
+		}
+
+		static void TestHeap3(byte[] data)
+		{
+			stopwatch.Restart();
+			var products = Utf8Json.JsonSerializer.Deserialize<List<HeapProduct>>(data);
 
 			foreach (var product in products)
 				foreach (var color in product.Colors)
