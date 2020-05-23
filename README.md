@@ -2,7 +2,7 @@
 
 The StackOnlyJsonParser combines the System.Text.Json library with C# 9 code generators to allow for fast and GC-friendly JSON deserialization.
 
-It's intended mostly for the low latency and real time systems.
+It's intended mostly for the low latency and real time systems that have to deal with big data flows under a requirement of a small memory footprint.
 
 ## Setting it up
 
@@ -340,7 +340,7 @@ The StackOnlyJsonParser was profiled with both the standard `string` type, as we
   <img src="https://raw.githubusercontent.com/TomaszRewak/C-sharp-stack-only-json-parser/master/About/Memory%20in%20use.png" width=800/>
 </p>
 
-
+**Please note** that the processing time of small messages is higher for the StackOnlyJsonParser than for alternative libraries. After all the StackOnlyJsonParser needs to iterate through the entire message multiple times in order to perform lazy loading of arrays and dictionaries. The performance gain when processing bigger messages comes mostly from the fact that the StackOnlyJsonParser doesn't have to perform additional allocations when creating those collections. So if performance in processing of small messages is your main concern, you might want to consider using alternative parsers. But if you main focus is on the memory footprint of the deserialization process in case of big messages, the StackOnlyJsonParser might be a good choice for you.  
 
 
 
