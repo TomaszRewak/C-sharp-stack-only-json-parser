@@ -4,6 +4,8 @@ The StackOnlyJsonParser combines the System.Text.Json library with C# 9 code gen
 
 It's intended mostly for the low latency and real time systems that have to deal with big data flows under a requirement of a small memory footprint.
 
+A short write up of the project can be found [on my blog](https://blog.tomasz-rewak.com/stack-only-json-deserialization/).
+
 ## Setting it up
 
 This library depends on the new C# 9 code generation feature. At the time of writing this, that requirement can be met by using the preview version of the VS 2019 and by setting the language version of the target project to `preview`.
