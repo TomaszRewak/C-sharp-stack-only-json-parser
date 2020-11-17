@@ -16,7 +16,7 @@
 1.0.1 - Fixing nuget analyzers
 1.0.0 - Initial release</PackageReleaseNotes>
 		<Description>Stack only json deserialization using generators and System.Text.Json library</Description>
-		<Version>1.1.0</Version>
+		<Version>1.2.0</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>Tomasz Rewak</Copyright>
 	</PropertyGroup>
