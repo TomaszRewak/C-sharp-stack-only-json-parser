@@ -14,12 +14,12 @@ namespace StackOnlyJsonParser
 	[Generator]
 	internal class Generator : ISourceGenerator
 	{
-		public void Initialize(InitializationContext context)
+		public void Initialize(GeneratorInitializationContext context)
 		{
 			context.RegisterForSyntaxNotifications(() => new MySyntaxReceiver());
 		}
 
-		public void Execute(SourceGeneratorContext context)
+		public void Execute(GeneratorExecutionContext context)
 		{
 			var syntaxReceiver = (MySyntaxReceiver)context.SyntaxReceiver;
 			var compilation = context.Compilation;
@@ -43,7 +43,7 @@ namespace StackOnlyJsonParser
 			}
 		}
 
-		private void GenerateType(SourceGeneratorContext context, INamedTypeSymbol type)
+		private void GenerateType(GeneratorExecutionContext context, INamedTypeSymbol type)
 		{
 			var structure = new JsonType(type);
 			var code = TypeGenerator.Generate(structure);
@@ -51,7 +51,7 @@ namespace StackOnlyJsonParser
 			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(code, Encoding.UTF8));
 		}
 
-		private void GenerateArray(SourceGeneratorContext context, INamedTypeSymbol type)
+		private void GenerateArray(GeneratorExecutionContext context, INamedTypeSymbol type)
 		{
 			var structure = new JsonArray(type);
 			var code = ArrayGenerator.Generate(structure);
@@ -59,7 +59,7 @@ namespace StackOnlyJsonParser
 			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(code, Encoding.UTF8));
 		}
 
-		private void GenerateDictionaty(SourceGeneratorContext context, INamedTypeSymbol type)
+		private void GenerateDictionaty(GeneratorExecutionContext context, INamedTypeSymbol type)
 		{
 			var structure = new JsonDictionary(type);
 			var code = DictionaryGenerator.Generate(structure);
@@ -67,7 +67,7 @@ namespace StackOnlyJsonParser
 			context.AddSource($"{type.Name}.Generated.cs", SourceText.From(code, Encoding.UTF8));
 		}
 
-		private void GenerateLazyLoader(SourceGeneratorContext context, INamedTypeSymbol type)
+		private void GenerateLazyLoader(GeneratorExecutionContext context, INamedTypeSymbol type)
 		{
 			var structure = new JsonLazyLoader(type);
 			var code = LazyLoaderGenerator.Generate(structure);
