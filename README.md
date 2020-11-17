@@ -8,13 +8,13 @@ A short write up of the project can be found [on my blog](https://blog.tomasz-re
 
 ## Setting it up
 
-This library depends on the new C# 9 code generation feature. At the time of writing this, that requirement can be met by using the preview version of the VS 2019 and by setting the language version of the target project to `preview`.
+This library depends on the C# 9 code generators available with the .NET 5.0.
 
 ```
 	<PropertyGroup>
 		...
 		<TargetFramework>net5.0</TargetFramework>
-		<LangVersion>preview</LangVersion>
+		...
 	</PropertyGroup>
 ```
 
